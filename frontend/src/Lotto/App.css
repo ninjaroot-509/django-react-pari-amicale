@@ -1,0 +1,188 @@
+.App {
+    position: absolute;
+    width: -webkit-fill-available;
+    height: 100%;
+    min-height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    grid-template-rows: 70px 60px auto;
+    column-gap: 10px;
+    height: 100%;
+    max-height: 646px;
+    width: 100%;
+    max-width: 1366px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.mode {
+    grid-column: 1/2;
+    grid-row: 1/2;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+h1 svg {
+    margin-right: 10px;
+}
+
+.mega-lotto {
+    background-color: #209869;
+    border-radius: 5px;
+    padding-left: 15px;
+    color: white;
+}
+
+.corner-lotto {
+    background-color: #260085;
+    border-radius: 5px;
+    padding-left: 15px;
+    color: white;
+}
+
+.e-z-lotto {
+    background-color: #930089;
+    border-radius: 5px;
+    padding-left: 15px;
+    color: white;
+}
+
+.frenzy-lotto {
+    background-color: #f78100;
+    border-radius: 5px;
+    padding-left: 15px;
+    color: white;
+}
+
+.card {
+    grid-column: 1/2;
+    grid-row: 3/4;
+    display: flex;
+    flex-direction: column;
+}
+
+.game-card {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 10px;
+    flex: 1;
+    align-items: center;
+    padding: 10px;
+}
+
+.e-z-card {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.card-number {
+    border: 1px solid tomato;
+    color: tomato;
+    border-radius: 5px;
+    cursor: pointer;
+    max-height: 50px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.number-selected {
+    color: #fff;
+    display: flex;
+    justify-content: initial;
+    align-items: center;
+}
+
+.results {
+    grid-column: 2/3;
+    grid-row: 1/-1;
+    overflow: auto;
+}
+
+.numbers-area {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    row-gap: 10px;
+    column-gap: 5px;
+    padding: 20px
+}
+
+.numbers-area>div {
+    background-color: #c3d5e2ea;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: default;
+    color: black;
+}
+
+#guesses,
+#results {
+    padding: 20px;
+    height: auto;
+}
+
+#guesses>div>div {
+    position: absolute;
+    cursor: pointer;
+    top: -4px;
+    right: -2px;
+    border: 1px solid tomato;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    background-color: #fff;
+    display: none;
+}
+
+#guesses>div:hover>div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#buttons-wrapper {
+    /* display: flex;
+    justify-content: space-around; */
+    text-align: center;
+}
+
+@media screen and (max-width: 767px) {
+    .App {
+        height: auto;
+        align-items: unset;
+    }
+    main {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr auto;
+        max-width: 100%;
+        max-height: 100%;
+        min-height: 100%;
+        height: auto;
+    }
+    .mode {
+        flex-wrap: wrap;
+    }
+    .game-card {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    .card-number {
+        height: 50px;
+    }
+    .results {
+        grid-column: 1/2;
+        grid-row: 4/5;
+        overflow: initial;
+    }
+}
