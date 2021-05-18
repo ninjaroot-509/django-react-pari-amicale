@@ -48,3 +48,9 @@ class WalletRequestedAdmin(admin.ModelAdmin):
     list_filter = ['date', 'user', 'is_complete']
     search_fields = ['montant', 'user', 'date']
 admin.site.register(WalletRequested, WalletRequestedAdmin)
+
+
+admin.site.register(Game)
+admin.site.register(Bet)
+admin.site.register(BetActive)
+admin.site.register(FriendRequest)

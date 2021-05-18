@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { withStyles, Typography } from '@material-ui/core';
+import BetsTabPanel from './BetsTabPanel'
+import { Typography, withStyles } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import TabPanel from './TabPanel';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   heading: {
     padding: '1em',
     textAlign: 'center',
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#303030',
     height: '4.5em',
   },
-  tabPanel: {
+  betsTabPanel: {
     marginTop: '6.5em',
   },
   headingText: {
@@ -21,26 +21,26 @@ const useStyles = makeStyles((theme) => ({
   },
   headingTextGroup: {
     paddingRight: '1em',
-    color: 'white',
   },
-}));
+});
 
-const TheBoard = () => {
+const MyBets = () => {
+
     const classes = useStyles();
 
     return (
       <div>
         <div className={classes.heading}>
           <div className={classes.headingTextGroup}>
-            <Typography variant="h4" className={classes.headingText}>Le tableau</Typography>
-            <Typography>Tout les matchs </Typography>
+            <Typography variant="h4" className={classes.headingText} color="textPrimary">My Bets</Typography>
+            <Typography color="textPrimary">Lifetime Overall: Units</Typography>
           </div>
         </div>
-        <div className={classes.tabPanel}>
-          <TabPanel />
+        <div className={classes.betsTabPanel}>
+          <BetsTabPanel />
         </div>
       </div>
     );
 }
 
-export default TheBoard;
+export default MyBets;

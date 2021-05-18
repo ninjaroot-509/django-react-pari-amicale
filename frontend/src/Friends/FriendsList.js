@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, {  } from 'react';
+import FriendsListHeading from './FriendsListHeading'
 import { withStyles, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TabPanel from './TabPanel';
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   tabPanel: {
     marginTop: '6.5em',
   },
-  headingText: {
+  headingText: { 
     marginTop: '.2em',
   },
   headingTextGroup: {
@@ -25,22 +26,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TheBoard = () => {
-    const classes = useStyles();
+const FriendsList = () => {
+  const classes = useStyles();
 
-    return (
-      <div>
-        <div className={classes.heading}>
-          <div className={classes.headingTextGroup}>
-            <Typography variant="h4" className={classes.headingText}>Le tableau</Typography>
-            <Typography>Tout les matchs </Typography>
-          </div>
-        </div>
-        <div className={classes.tabPanel}>
-          <TabPanel />
-        </div>
+  return (
+    <div>
+      <div className={classes.heading}>
+        <FriendsListHeading />
       </div>
-    );
+      <div className={classes.tabPanel}>
+        <TabPanel />
+      </div>
+    </div>
+  );
 }
 
-export default TheBoard;
+export default FriendsList;

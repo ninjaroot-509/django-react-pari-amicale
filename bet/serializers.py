@@ -4,8 +4,44 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 
 class ProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
+    first_name = serializers.ReadOnlyField(source='user.first_name')
+    last_name = serializers.ReadOnlyField(source='user.last_name')
     class Meta:
         model = Profile
+        fields = '__all__'
+        # read_only_fields = ('user',)
+
+class DemandeSerializer(serializers.ModelSerializer):
+    from_user_name = serializers.CharField(source='from_user.username')
+    to_user_name = serializers.CharField(source='to_user.username')
+    class Meta:
+        model = FriendRequest
+        fields = '__all__'
+        # read_only_fields = ('user',)
+
+class GameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Game
+        fields = '__all__'
+        # read_only_fields = ('user',)
+
+class BetSerializer(serializers.ModelSerializer):
+    owner_name = serializers.CharField(source='owner.username')
+    team1 = serializers.CharField(source='game.team1')
+    team2 = serializers.CharField(source='game.team2')
+    commence_time = serializers.CharField(source='game.commence_time')
+    class Meta:
+        model = Bet
+        fields = '__all__'
+        # read_only_fields = ('user',)
+
+class BetActiveSerializer(serializers.ModelSerializer):
+    team1 = serializers.CharField(source='bet.game.team1')
+    team2 = serializers.CharField(source='bet.game.team2')
+    commence_time = serializers.CharField(source='bet.game.commence_time')
+    class Meta:
+        model = BetActive
         fields = '__all__'
         # read_only_fields = ('user',)
 

@@ -18,16 +18,254 @@ from knox.models import AuthToken
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 
-def view_404(request, exception=None):
-    # make a redirect to homepage
-    # you can use the name of url or just the plain link
-    return redirect('/') # or redirect('name-of-index-url')
+import json
+import requests
+
+# An api key is emailed to you when you sign up to a plan
+api_key = 'cc7678327fff34159a75ee213a35a516'
+
 
 def index(request):
     return render(request, "build/index.html")
 
 def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=6))
+    
+def view_404(request, exception=None):
+    # make a redirect to homepage
+    # you can use the name of url or just the plain link
+    return redirect('/') # or redirect('name-of-index-url')
+
+class UserListView(APIView):
+    def get(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(user=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+            user_list = Profile.objects.all().exclude(user=user) 
+            for f in user_list:
+                if f in user.profile.friends.all():
+                    user_list = user_list.exclude(id=f.id)
+            serializer = ProfileSerializer(user_list, many=True)
+            return JsonResponse(serializer.data, safe=False)
+
+class FriendListView(APIView):
+    def get(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(user=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+            p = user.profile
+            friends = p.friends.all()
+            serializer = ProfileSerializer(friends, many=True)
+            return JsonResponse(serializer.data, safe=False)
+
+class DemandeReceiveView(APIView):
+    def get(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(user=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+            dem = FriendRequest.objects.filter(to_user=user)  
+            serializer = DemandeSerializer(dem, many=True)
+            return JsonResponse(serializer.data, safe=False)
+
+class DemandeSentView(APIView):
+    def get(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(user=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+            dem = FriendRequest.objects.filter(from_user=user)  
+            serializer = DemandeSerializer(dem, many=True)
+            return JsonResponse(serializer.data, safe=False)
+
+class RequestFriendView(APIView):
+    def post(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = Profile.objects.get(user=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+            id_add = request.data.get("id_add", None)
+            id_cancel = request.data.get("id_cancel", None)
+            id_accept = request.data.get("id_accept", None)
+            if id_add != None:
+                user_id_add = User.objects.get(pk=id_add)
+                frequest, created = FriendRequest.objects.get_or_create(from_user=user,to_user=user_id_add)
+                return JsonResponse({'status': 1, 'message': 'request successfully!'})
+            if id_cancel != None:
+                user_id_cancel = User.objects.get(pk=id_cancel)
+                frequest = FriendRequest.objects.filter(from_user=user,to_user=user_id_cancel).first()
+                frequest.delete()
+                return JsonResponse({'status': 1, 'message': 'request successfully!'})
+            if id_accept != None:
+                from_user = User.objects.get(pk=id_accept)
+                frequest = FriendRequest.objects.filter(to_user=user, from_user=from_user).first()
+                user1 = frequest.to_user
+                user2 = from_user
+                user1.profile.friends.add(user2.profile)
+                user2.profile.friends.add(user1.profile)
+                frequest.delete()
+                return JsonResponse({'status': 1, 'message': 'request successfully!'})
+            return JsonResponse({'status': 0, 'message': 'errrorrr!'})
+
+class GameView(APIView):
+    # def get(self, request, format=None):
+    #     pk = request.GET.get('pk', None)
+    #     if pk != None:
+    #         user = User.objects.get(user=pk)
+    #     else:
+    #         # token = request.META.get('HTTP_AUTHORIZATION', '')
+    #         token = request.META.get('HTTP_AUTHORIZATION', '').split()
+    #         key = token[1].lower()[0:8]
+    #         tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+    #         # tokenview = AuthToken.objects.get(token_key=key).user
+    #         user = User.objects.get(pk=tokenview)
+    #         games = Game.objects.filter(user=user, is_end=False, is_use=False)  
+    #         serializer = GameSerializer(games, many=True)
+    #         return JsonResponse(serializer.data, safe=False)
+
+    def get(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(user=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+            sport_key = 'soccer_epl'
+
+            # odds_response = requests.get('https://api.the-odds-api.com/v3/odds', params={
+            #     'api_key': api_key,
+            #     'sport': sport_key,
+            #     'region': 'us', # uk | us | eu | au
+            #     'mkt': 'h2h' # h2h | spreads | totals
+            # })
+
+            # odds_json = json.loads(odds_response.text)
+            # if not odds_json['success']:
+            #     return JsonResponse({'status': 0, 'message': 'There was a problem with the odds request:' + odds_json['msg']})
+            # else:
+                # objs = odds_json['data']
+                # for obj in objs:
+                #     verif = Game.objects.filter(user=user, api_id=obj['id'])
+                #     if not verif.exists():
+                #         Game.objects.create(
+                #             user=user, 
+                #             api_id=obj['id'], 
+                #             sport_key=obj['sport_key'], 
+                #             sport_nice=obj['sport_nice'], 
+                #             team1=obj['teams'][0], 
+                #             team2=obj['teams'][1],
+                #             home_team=obj['home_team'],
+                #             commence_time=obj['commence_time'],
+                #             site_key=obj['sites'][0]['site_key'],
+                #             site_nice=obj['sites'][0]['site_nice'],
+                #             last_update=obj['sites'][0]['last_update'],
+                #             win=obj['sites'][0]['odds']['h2h'][0],
+                #             null=obj['sites'][0]['odds']['h2h'][2],
+                #             lose=obj['sites'][0]['odds']['h2h'][1]
+                #         )
+            games = Game.objects.filter(is_end=False)  
+            serializer = GameSerializer(games, many=True)
+            return JsonResponse(serializer.data, safe=False)
+
+class BetView(APIView):
+    def get(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(user=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+            bets = Bet.objects.filter(is_active=False)  
+            serializer = BetSerializer(bets, many=True)
+            return JsonResponse(serializer.data, safe=False)
+
+class MyBetView(APIView):
+    def get(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(user=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+            bets = Bet.objects.filter(owner=user, is_active=False)  
+            serializer = BetSerializer(bets, many=True)
+            return JsonResponse(serializer.data, safe=False)
+
+class MyActiveBetView(APIView):
+    def get(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(user=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+            bets = BetActive.objects.filter(user=user, is_end=False)  
+            serializer = BetActiveSerializer(bets, many=True)
+            return JsonResponse(serializer.data, safe=False)
+
+class MyOldBetView(APIView):
+    def get(self, request, format=None):
+        pk = request.GET.get('pk', None)
+        if pk != None:
+            user = User.objects.get(user=pk)
+        else:
+            # token = request.META.get('HTTP_AUTHORIZATION', '')
+            token = request.META.get('HTTP_AUTHORIZATION', '').split()
+            key = token[1].lower()[0:8]
+            tokenview = get_object_or_404(AuthToken, token_key=key).user.id
+            # tokenview = AuthToken.objects.get(token_key=key).user
+            user = User.objects.get(pk=tokenview)
+            bets = BetActive.objects.filter(user=user, is_end=True)  
+            serializer = BetActiveSerializer(bets, many=True)
+            return JsonResponse(serializer.data, safe=False)
 
 
 class WalletView(APIView):
@@ -202,7 +440,7 @@ class WalletFormView(APIView):
         moncash = moncashify.API(settings.MONCASH_CLIENT_ID, settings.MONCASH_SECRET_KEY)
         payment = moncash.payment(order_id, int(montant))
         p = payment.redirect_url
-        return JsonResponse({'site': p})
+        return JsonResponse({'sites': p})
 
 class MoncashView(APIView):
     def post(self, request, format=None):

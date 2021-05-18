@@ -44,7 +44,7 @@ const Login = ({ history }) => {
             setLoad(true)
             const config = { headers: { 'Content-Type': 'application/json' } }
             const body = JSON.stringify({ username, password })
-            axios.post( 'https://quizapay.com/api/auth/login', body, config)
+            axios.post( 'http://localhost:8000/api/auth/login', body, config)
             .then(res => { 
                 setUserSession(res.data.token, res.data.user);       // LOGIN OK redirect 
                 addNotification({
@@ -60,7 +60,7 @@ const Login = ({ history }) => {
                 })
                 .catch(err => {
                     setLoad(false)
-                    addToast("Erreur! Nom d'utilisateur ou mot de passe invalide.", {appearance: 'error', autoDismiss: true})
+                    addToast("Erreur! Nom d'utilisateur ou mot de passe invalide.  " + err, {appearance: 'error', autoDismiss: true})
                 })
         } else {
             addToast("Nom d'utilisateur ou mot de passe manquant!", {appearance: 'warning', autoDismiss: true})
