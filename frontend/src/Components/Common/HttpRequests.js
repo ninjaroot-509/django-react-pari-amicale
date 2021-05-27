@@ -14,6 +14,7 @@ const getProfile = () => axios.get(`${url}profile/`, config).then(res => res.dat
 const getWallet = () => axios.get(`${url}wallet/`, config).then(res => res.data)
 const getRetrait = () => axios.get(`${url}retrait/`, config).then(res => res.data)
 const getGame = () => axios.get(`${url}games/`, config).then(res => res.data)
+const getGameID = (id) => axios.get(`${url}game-details/?id=${id}`, config).then(res => res.data)
 const getBet = () => axios.get(`${url}bets/`, config).then(res => res.data)
 const getUserList = () => axios.get(`${url}users/`, config).then(res => res.data)
 const getFriendList = () => axios.get(`${url}friends/`, config).then(res => res.data)
@@ -23,4 +24,4 @@ const getMyBetActive = () => axios.get(`${url}myactivebets/`, config).then(res =
 const getDemandeRecuList = () => axios.get(`${url}demandereculist/`, config).then(res => res.data)
 const getDemandeSentList = () => axios.get(`${url}demandesentlist/`, config).then(res => res.data)
 
-export default { getProfile, getWallet, getRetrait, getGame, getBet, getUserList, getFriendList, getMyBet, getMyOldBet, getMyBetActive, getDemandeRecuList, getDemandeSentList }
+export default { getProfile, getWallet, getRetrait, getGame, getGameID, getBet, getUserList, getFriendList, getMyBet, getMyOldBet, getMyBetActive, getDemandeRecuList, getDemandeSentList }

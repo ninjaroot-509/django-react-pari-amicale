@@ -16,7 +16,7 @@ import {
   InputAdornment,
   Grid
 } from '@material-ui/core';
-import RemoveIcon from '@material-ui/icons/Remove';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Alert from '@material-ui/lab/Alert';
 import { withRouter } from "react-router";
 import { getToken } from '../Components/Common/Auth/Sessions'
@@ -117,7 +117,7 @@ function DemandeSent(props) {
                       <ListItemText
                         primary={<Typography style={{color: 'white'}}>{friend.to_user_name}</Typography>}
                       />
-                      <ListItemSecondaryAction><IconButton onClick={() => cancelRequest(friend.to_user)}><RemoveIcon style={{color: 'red'}}/></IconButton></ListItemSecondaryAction>
+                      <ListItemSecondaryAction><IconButton onClick={() => cancelRequest(friend.to_user)}><DeleteIcon style={{color: 'red'}}/></IconButton></ListItemSecondaryAction>
                     </ListItem>,
                   )}
                 </List>
@@ -125,7 +125,7 @@ function DemandeSent(props) {
             </Grid>
           </Grid>
           :
-          <Typography className={classes.conditionalText}>vous n'avez aucune demande d'amis.</Typography>
+          <Typography className={classes.conditionalText}>vous n'avez aucune demande d'amis envoyes.</Typography>
         }
       </div>
     </div>

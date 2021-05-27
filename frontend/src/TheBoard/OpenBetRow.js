@@ -1,6 +1,11 @@
 import React, {useState} from 'react';
+import moment from 'moment';
+// import Moment from 'react-moment';
+import 'moment/locale/fr'
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, TableCell, TableRow, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { getToken } from '../Components/Common/Auth/Sessions'
+import axios from 'axios'
 
 const useStyles = makeStyles({
   table: {
@@ -10,6 +15,7 @@ const useStyles = makeStyles({
 });
 
 function OpenBetRow(props) {
+  const token = getToken()
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
@@ -21,8 +27,15 @@ function OpenBetRow(props) {
     setOpen(false);
   };
 
-  function acceptBet() {
+  function acceptBet(id, user_position) {
     //regardless, closes the dialog
+    const config = { headers: { 'Content-Type': 'application/json' } }
+    if (token) config.headers['Authorization'] = `Token ${token}`
+      axios.post(`http://localhost:8000/api/accept-bet/`, JSON.stringify({id_accept: id, user_position: user_position}), config)
+      .then(res => {
+      })
+      .catch(err => {
+      })
     handleClose();
   }
 
@@ -46,7 +59,7 @@ function OpenBetRow(props) {
             }
           </TableCell>
         {/* commence_time */}
-        <TableCell style={{color: 'white'}} align="center">{props.bet.commence_time}</TableCell>
+        <TableCell style={{color: 'white'}} align="center">{moment(props.bet.commence_time).calendar()}</TableCell>
       </TableRow>
       <>
         <Dialog
@@ -55,52 +68,25 @@ function OpenBetRow(props) {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{`Take this Bet?`}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">Take this Bet?</DialogTitle>
           <DialogContent>
             {/* displays different confirmation text depending if the bet is spread or over/under */}
-            {props.bet.proposers_team_id ?
-              <>
-              {/* spread options */}
-              {props.bet.proposers_team_is_home_team ? 
-                <DialogContentText id="alert-dialog-description">
-                  {props.bet.proposers_first_name} has the {props.bet.home_team_name} {props.bet.home_team_spread > 0 && '+'}{props.bet.home_team_spread} for {props.bet.wager} units this week.
-                  <br/>
-                  Do you want to take the {props.bet.away_team_name} {props.bet.away_team_spread > 0 && '+'}{props.bet.away_team_spread}?
-                </DialogContentText>
-              :
-                <DialogContentText id="alert-dialog-description">
-                  {props.bet.proposers_first_name} has the {props.bet.away_team_name} {props.bet.away_team_spread > 0 && '+'}{props.bet.away_team_spread} for {props.bet.wager} units this week.
-                  <br/>
-                  Do you want to take the {props.bet.home_team_name} {props.bet.home_team_spread > 0 && '+'}{props.bet.home_team_spread}?
-                </DialogContentText>
-              }
-              </>
-            :
             <>
-              {/* over/under options */}
-              {props.bet.proposers_bet_is_over ?
-                <DialogContentText id="alert-dialog-description">
-                  {props.bet.proposers_first_name} has Over {props.bet.over_under} for the {props.bet.away_team_name} at the {props.bet.home_team_name}.
-                  <br />
-                  Do you want to take the Under?
-                </DialogContentText>
-              :
-                <DialogContentText id="alert-dialog-description">
-                  {props.bet.proposers_first_name} has Under {props.bet.over_under} for the {props.bet.away_team_name} at the {props.bet.home_team_name}.
-                  <br />
-                  Do you want to take the Over?
-                </DialogContentText>
-              }
-            </>
-          }
+              {/* spread options */}
+              <DialogContentText id="alert-dialog-description">
+                {props.bet.owner_name} a parier sur victoire de {props.bet.winning_equipe === 'team1' ? props.bet.team1 : props.bet.team2} contre {props.bet.winning_equipe === 'team1' ? props.bet.team2 : props.bet.team1} pour une somme de {props.bet.prix} Gourdes
+                <br/>
+                si tu accept le parie tu paieras {props.bet.prix} gourdes, et si tu gagnes tu auras gagne {props.bet.prix} X2
+              </DialogContentText>
+            </>            
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} >
-              Cancel
+            <Button onClick={handleClose}>
+              Back
           </Button>
-            <Button onClick={acceptBet} >
+            <Button onClick={() => acceptBet(props.bet.id, props.bet.winning_equipe === 'team1' ? 'team2' : 'team1')}>
               Accept Bet
-          </Button>
+            </Button>
           </DialogActions>
         </Dialog>
       </>

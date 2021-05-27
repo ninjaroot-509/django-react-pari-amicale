@@ -110,19 +110,22 @@ class Game(models.Model):
     team1 = models.CharField(max_length=250)
     team2 = models.CharField(max_length=250)
     home_team = models.CharField(max_length=250)
-    commence_time = models.DateTimeField(max_length=100)
+    commence_time = models.DateTimeField()
     add_time = models.DateTimeField(auto_now_add=True)
     site_key = models.CharField(max_length=100)
     site_nice = models.CharField(max_length=100)
-    last_update = models.DateTimeField(max_length=100)
+    last_update = models.DateTimeField()
     win = models.CharField(max_length=100)
-    null = models.CharField(max_length=100)
+    null = models.CharField(max_length=100, null=True, blank=True)
     lose = models.CharField(max_length=100)
+    is_foot = models.BooleanField(default=False)
+    is_basket = models.BooleanField(default=False)
+    is_baseball = models.BooleanField(default=False)
     is_end = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = 'Sports Liste'
-        verbose_name_plural = 'Listes des Sports'
+        verbose_name = 'Matchs Liste'
+        verbose_name_plural = 'Listes des matchs'
 
     def __str__(self):
         return '{} VS {}'.format(self.team1, self.team2) # TODO
@@ -131,6 +134,7 @@ class Game(models.Model):
 class Bet(models.Model): 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    prix = models.FloatField(default=0)
     winning_equipe = models.CharField(max_length=250, blank=True)
     is_null = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
@@ -146,11 +150,13 @@ class BetActive(models.Model):
     bet = models.ForeignKey(Bet, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     user_position = models.CharField(max_length=250)
+    winning_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='winning_user', on_delete=models.CASCADE, null=True, blank=True)
     is_end = models.BooleanField(default=False)
+    add_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'ParisActive Liste'
         verbose_name_plural = 'Listes des ParisActive'
 
     def __str__(self):
-        return self.user.username # TODO
+        return '{} VS {}'.format(self.bet.game.team1, self.bet.game.team2) # TODO

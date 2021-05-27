@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles, Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Paper, Typography } from '@material-ui/core';
 import moment from 'moment';
 import request from '../Components/Common/HttpRequests'
+import { getUser } from '../Components/Common/Auth/Sessions'
 
 const useStyles = makeStyles({
   tableContainer: {
@@ -22,6 +23,7 @@ function Active(props) {
   }, []);
 
   const classes = useStyles();
+  const user = getUser()
 
   const [activeBet, setMyActiveBet] = useState([])
     
@@ -44,67 +46,49 @@ function Active(props) {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell align="left">Date</TableCell>
-                <TableCell align="center">Game</TableCell>
-                <TableCell align="left">Against</TableCell>
-                <TableCell align="left">My Bet</TableCell>
-                <TableCell align="center">Wager</TableCell>
+                <TableCell align="left">Ajout le</TableCell>
+                <TableCell align="center">Equipes</TableCell>
+                <TableCell align="left">Joeur</TableCell>
+                <TableCell align="center">Votre proposition</TableCell>
+                <TableCell align="center">l'autre proposition</TableCell>
+                <TableCell align="center">Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {activeBet.map(bet => (
                 <TableRow key={bet.id}>
-                  <TableCell align="left">{moment(bet.date).format("M/D")}</TableCell>
+                  <TableCell align="left">{moment(bet.add_time).format("M/D/Y")}</TableCell>
                   <TableCell align="center">{bet.team1 + ' @'}<br/>{bet.team2}</TableCell>
-                  {/* determines if bet is spread or O/U */}
-                  {bet.proposers_team_id ? 
+                  {bet.owner === user.id?
                   <>
-                  {bet.proposers_id === props.store.user.id ?
-                    bet.proposers_team_is_home_team ?
-                      //user is proposer and team is home
-                      <>
-                        <TableCell align="left">{bet.acceptors_first_name}</TableCell>
-                        <TableCell align="left">{bet.home_team_abbr} {bet.home_team_spread > 0 && '+'}{bet.home_team_spread}</TableCell>
-                      </>
-                      :
-                      //user is proposer and team is away
-                      <>
-                        <TableCell align="left">{bet.acceptors_first_name}</TableCell>
-                        <TableCell align="left">{bet.away_team_abbr} {bet.away_team_spread > 0 && '+'}{bet.away_team_spread}</TableCell>
-                      </>
-                    :
-                    bet.proposers_team_is_home_team ?
-                      //user is acceptor and team is away
-                      <>
-                        <TableCell align="left">{bet.proposers_first_name}</TableCell>
-                        <TableCell align="left">{bet.away_team_abbr} {bet.away_team_spread > 0 && '+'}{bet.away_team_spread}</TableCell>
-                      </>
-                      :
-                      //user is acceptor and team is home
-                      <>
-                        <TableCell align="left">{bet.proposers_first_name}</TableCell>
-                        <TableCell align="left">{bet.home_team_abbr} {bet.home_team_spread > 0 && '+'}{bet.home_team_spread}</TableCell>
-                      </>
-                  }
+                    <TableCell align="left">{bet.acceptors_name}</TableCell>
+                    <TableCell align="center">
+                        {bet.winning_equipe?
+                          <Typography style={{color: '#000'}} variant="body2">victoire de {bet.winning_equipe === 'team1' ? bet.team1 : bet.team2}</Typography>
+                          :
+                          bet.is_null === true? 
+                          <Typography style={{color: '#000'}} variant="body2">match null</Typography>
+                          :''
+                        }
+                    </TableCell>
+                    <TableCell align="center">victoire de {bet.user_position === 'team1' ? bet.team1 : bet.team2}</TableCell>
                   </>
                   :
                   <>
-                      {bet.proposers_bet_is_over ?
-                        //user is proposer and bet is over
-                        <>
-                          <TableCell align="left">{bet.acceptors_first_name}</TableCell>
-                          <TableCell align="left">Over {bet.over_under}</TableCell>
-                        </>
-                        :
-                        //user is proposer and bet is under
-                        <>                          
-                          <TableCell align="left">{bet.acceptors_first_name}</TableCell>
-                          <TableCell align="left">Under {bet.over_under}</TableCell>
-                        </>
-                      } 
+                    <TableCell align="left">{bet.owner_name}</TableCell>
+                    <TableCell align="center">victoire de {bet.user_position === 'team1' ? bet.team1 : bet.team2}</TableCell>
+                    <TableCell align="center">
+                        {bet.winning_equipe?
+                          <Typography style={{color: '#000'}} variant="body2">victoire de {bet.winning_equipe === 'team1' ? bet.team1 : bet.team2}</Typography>
+                          :
+                          bet.is_null === true? 
+                          <Typography style={{color: '#000'}} variant="body2">match null</Typography>
+                          :''
+                        }
+                    </TableCell>
                   </>
-                }
-                  <TableCell align="left">{bet.wager}u</TableCell>
+                  }
+                  <TableCell align="center">En Cours..</TableCell>
                 </TableRow>
               )
               )}

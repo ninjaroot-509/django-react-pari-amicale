@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TheBoard = () => {
+const TheBoard = ({history}) => {
     const classes = useStyles();
 
     return (

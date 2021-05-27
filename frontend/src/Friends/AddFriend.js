@@ -137,14 +137,14 @@ const AddFriend = ({history}) => {
   const addFriend = (id) => {
     document.getElementById('friendSearch').value = '';
     const config = { headers: { 'Content-Type': 'application/json' } }
-      if (token) config.headers['Authorization'] = `Token ${token}`
-        axios.post(`http://localhost:8000/api/friends-actions/`, JSON.stringify({id_add: id}), config)
-        .then(res => {
-            setOpen(true)
-        })
-        .catch(err => {
-            setOpen(false)
-        })
+    if (token) config.headers['Authorization'] = `Token ${token}`
+      axios.post(`http://localhost:8000/api/friends-actions/`, JSON.stringify({id_add: id}), config)
+      .then(res => {
+          setOpen(true)
+      })
+      .catch(err => {
+          setOpen(false)
+      })
   }
 
   const classes = useStyles();

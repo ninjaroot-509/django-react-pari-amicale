@@ -39,7 +39,11 @@ class BetSerializer(serializers.ModelSerializer):
 class BetActiveSerializer(serializers.ModelSerializer):
     team1 = serializers.CharField(source='bet.game.team1')
     team2 = serializers.CharField(source='bet.game.team2')
+    winning_equipe = serializers.CharField(source='bet.winning_equipe')
+    is_null = serializers.BooleanField(source='bet.is_null')
     commence_time = serializers.CharField(source='bet.game.commence_time')
+    acceptors_name = serializers.CharField(source='user.username')
+    owner_name = serializers.CharField(source='bet.owner.username')
     class Meta:
         model = BetActive
         fields = '__all__'

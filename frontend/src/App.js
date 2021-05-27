@@ -6,6 +6,7 @@ import TheBoard from './TheBoard/TheBoard';
 import AddFriend from './Friends/AddFriend';
 import FriendsList from './Friends/FriendsList'
 import MyBets from './MyBets/MyBets'
+import AddBet from './AddBet/AddBet'
 import BottomNavBar from './BottomNavBar/BottomNavBar';
 import { Route, Switch, HashRouter as Router } from 'react-router-dom'
 // import { Router } from "react-router";
@@ -41,7 +42,7 @@ const App = () => {
         <Router history={history}>
           <GlobalStyles />          
           <Switch>
-            <PrivateRoute exact path="/" component={TheBoard} />
+            <PrivateRoute exact path="/" history={history} component={TheBoard} />
               <PrivateRoute
                 exact
                 path="/friends"
@@ -57,6 +58,12 @@ const App = () => {
                 exact
                 path='/mybets'
                 component={MyBets}
+              />
+              <PrivateRoute
+                exact
+                path='/match-details/:id'
+                history={history}
+                component={AddBet}
               />
             <PrivateRoute exact path="/lotto" component={Lotto} />
             <PrivateRoute exact path="/live/tictac" component={Start} />

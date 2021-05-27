@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles, Dialog, DialogActions, DialogTitle, Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Paper, Typography, Button } from '@material-ui/core'
 import moment from 'moment';
+import 'moment/locale/fr'
 import DeleteIcon from '@material-ui/icons/Delete';
 import request from '../Components/Common/HttpRequests'
+import { getUser, getToken } from '../Components/Common/Auth/Sessions'
+import axios from 'axios'
 
 const useStyles = makeStyles({
   tableContainer: {
@@ -23,6 +26,7 @@ function Open(props) {
   }, []);
 
   const classes = useStyles();
+  const token = getToken()
 
   const [open, setOpen] = useState(false);
   const [betToDelete, changeBetToDelete] = useState('');
@@ -38,7 +42,15 @@ function Open(props) {
 
   //deleting bet
   const handleDelete = (id) => {
-    console.log('deleting bet:', id);
+    const config = { headers: { 'Content-Type': 'application/json' } }
+    if (token) config.headers['Authorization'] = `Token ${token}`
+    axios.post(`http://localhost:8000/api/delete-bet/`, JSON.stringify({bet_id: id}), config)
+    .then(res => {
+        alert("Votre pari est efface avec succes!");
+    })
+    .catch(err => {
+        alert("Erreur " + err);
+    })
     handleClose();
   }
 
@@ -64,9 +76,8 @@ function Open(props) {
             <TableHead>
               <TableRow>
                 <TableCell align="left">Date</TableCell>
-                <TableCell align="center">Game</TableCell>
-                <TableCell align="left">My Bet</TableCell>
-                <TableCell align="center">Wager</TableCell>
+                <TableCell align="center">Equipes</TableCell>
+                <TableCell align="center">Proposition</TableCell>
                 <TableCell align="center">Delete</TableCell>
               </TableRow>
             </TableHead>
@@ -74,29 +85,17 @@ function Open(props) {
               {/* only displays your proposed bets */}
               {mybets.map(bet => (
                 <TableRow key={bet.id}>
-                  <TableCell align="left">{moment(bet.commence_time).format("M/D")}</TableCell>
-                  <TableCell align="center">{bet.team1} @ <br/> {bet.team2}</TableCell>
-                  {/* determines if bet is spread or O/U */}
-                  {bet.proposers_team_id ? 
-                    <>
-                      {/* checks if proposer is home team */}
-                      {bet.proposers_team_is_home_team ?
-                        <TableCell align="left">{bet.home_team_name} <br/>{bet.home_team_spread > 0 && '+'}{bet.home_team_spread}</TableCell>
+                  <TableCell align="left">{moment(bet.commence_time).calendar()}</TableCell>
+                  <TableCell align="center">{bet.team1} @ {bet.team2}</TableCell>
+                  <TableCell align="center">
+                      {bet.winning_equipe?
+                        <Typography style={{color: '#000'}} variant="body2">victoire de {bet.winning_equipe === 'team1' ? bet.team1 : bet.team2}</Typography>
                         :
-                        <TableCell align="left">{bet.away_team_name} <br/>{bet.away_team_spread > 0 && '+'}{bet.away_team_spread}</TableCell>
+                        bet.is_null === true? 
+                          <Typography style={{color: '#000'}} variant="body2">match null</Typography>
+                        :''
                       }
-                    </>
-                  :
-                    <TableCell align="left">
-                      {/* determines if proposer has over */}
-                      {bet.proposers_bet_is_over ?
-                        <Typography variant="body2">Over <br/>{bet.over_under}</Typography>
-                        :
-                        <Typography variant="body2">Under <br/>{bet.over_under}</Typography>
-                      } 
-                    </TableCell>
-                  }
-                  <TableCell align="center">{bet.wager}u</TableCell>
+                  </TableCell>
                   <TableCell align="center">
                     <DeleteIcon style={{color: '#662424'}} onClick={() => handleClickOpen(bet.id)} />
                   </TableCell>

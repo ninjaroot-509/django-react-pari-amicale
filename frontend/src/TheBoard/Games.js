@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment';
-import Moment from 'react-moment';
+import 'moment/locale/fr'
 import request from '../Components/Common/HttpRequests'
+import { useHistory } from "react-router-dom";
 // import { getUser, getToken, removeUserSession } from '../Components/Common/Auth/Sessions'
 import { makeStyles } from '@material-ui/core/styles';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Grid } from '@material-ui/core';
@@ -25,6 +26,8 @@ const useStyles = makeStyles({
 function SimpleTable(props) {
   const [games, setGame] = useState([])
   const classes = useStyles();
+
+  let history = useHistory();
     
     useEffect(()=>{
         if (games.length === 0) {
@@ -53,7 +56,7 @@ function SimpleTable(props) {
             <TableBody className={classes.tableBody}>
               {games.map((game, i) => {
                 return (
-                  <TableRow key={game.id}>
+                  <TableRow key={game.id} onClick={() => history.push(`/match-details/${game.id}`)}>
                     <TableCell style={{color: 'white'}} align="left">
                       <Grid container alignItems="center" >
                         <Grid item style={{verticalAlign: "middle"}} xs={12}>
@@ -69,7 +72,7 @@ function SimpleTable(props) {
                       </Grid>
                     </TableCell>
                     <TableCell style={{color: 'white'}} align="left">
-                      <Moment>{game.commence_time}</Moment>
+                      {moment(game.commence_time).calendar()}
                     </TableCell>
                   </TableRow>
                 )
