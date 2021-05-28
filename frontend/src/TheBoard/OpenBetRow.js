@@ -43,23 +43,23 @@ function OpenBetRow(props) {
     <>
       <TableRow onClick={handleClickOpen}>
         {/* Friend */}
-        <TableCell style={{color: 'white'}} align="left">{props.bet.owner_name}</TableCell>
+        <TableCell style={{color: '#000'}} align="left">{props.bet.owner_name}</TableCell>
         {/* Game */}
-        <TableCell style={{color: 'white'}} align="left">{props.bet.team1} @ {props.bet.team2}</TableCell>
+        <TableCell style={{color: '#000'}} align="left">{props.bet.team1} <b style={{color: 'green'}}>VS</b> {props.bet.team2}</TableCell>
         {/* Bet */}
         {/* determines if bet is spread or O/U */}
-          <TableCell align="left" style={{color: 'white'}}>
+          <TableCell align="left" style={{color: '#000'}}>
             {/* checks if proposer is home team */}
             {props.bet.winning_equipe ?
-              <Typography variant="body2">victoire de {props.bet.winning_equipe === 'team1' ? props.bet.team1 : props.bet.team2}</Typography>
+              <Typography variant="body2" style={{color: '#000'}}>victoire de <b>{props.bet.winning_equipe === 'team1' ? props.bet.team1 : props.bet.team2}</b></Typography>
               :
               props.bet.is_null === true? 
-                <Typography variant="body2">match null</Typography>
+                <Typography variant="body2" style={{color: '#000'}}>match null</Typography>
               :''
             }
           </TableCell>
         {/* commence_time */}
-        <TableCell style={{color: 'white'}} align="center">{moment(props.bet.commence_time).calendar()}</TableCell>
+        <TableCell style={{color: '#000'}} align="center">{moment(props.bet.commence_time).calendar()}</TableCell>
       </TableRow>
       <>
         <Dialog

@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '1.5em',
     paddingLeft: '24px',
     paddingRight: '24px',
-    color: 'white',
+    color: '#151515',
   },
   tableContainer: {
     marginTop: '4em',

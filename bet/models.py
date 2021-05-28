@@ -119,8 +119,7 @@ class Game(models.Model):
     null = models.CharField(max_length=100, null=True, blank=True)
     lose = models.CharField(max_length=100)
     is_foot = models.BooleanField(default=False)
-    is_basket = models.BooleanField(default=False)
-    is_baseball = models.BooleanField(default=False)
+    is_other = models.BooleanField(default=False)
     is_end = models.BooleanField(default=False)
 
     class Meta:

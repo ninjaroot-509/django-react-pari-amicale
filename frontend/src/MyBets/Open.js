@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     marginTop: '4.5em',
     paddingLeft: '24px',
     paddingRight: '24px',
-    backgroundColor: '#151515',
+    color: '#151515',
   }
 });
 
@@ -75,10 +75,10 @@ function Open(props) {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell align="left">Date</TableCell>
-                <TableCell align="center">Equipes</TableCell>
-                <TableCell align="center">Proposition</TableCell>
-                <TableCell align="center">Delete</TableCell>
+                <TableCell align="left" style={{fontWeight: 'bold'}}>heure de début</TableCell>
+                <TableCell align="center" style={{fontWeight: 'bold'}}>Equipes</TableCell>
+                <TableCell align="center" style={{fontWeight: 'bold'}}>Votre proposition</TableCell>
+                <TableCell align="right" style={{fontWeight: 'bold'}}>Effacer</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -89,7 +89,7 @@ function Open(props) {
                   <TableCell align="center">{bet.team1} @ {bet.team2}</TableCell>
                   <TableCell align="center">
                       {bet.winning_equipe?
-                        <Typography style={{color: '#000'}} variant="body2">victoire de {bet.winning_equipe === 'team1' ? bet.team1 : bet.team2}</Typography>
+                        <Typography style={{color: '#000'}} variant="body2">victoire de <b>{bet.winning_equipe === 'team1' ? bet.team1 : bet.team2}</b></Typography>
                         :
                         bet.is_null === true? 
                           <Typography style={{color: '#000'}} variant="body2">match null</Typography>
@@ -105,7 +105,7 @@ function Open(props) {
           </Table>
         </TableContainer>
         :
-        <Typography color="textPrimary" className={classes.conditionalText}>You haven't opened any bets right now.</Typography>
+        <Typography color="textPrimary" className={classes.conditionalText}>Vous n'avez pas ouvert de paris en ce moment.</Typography>
       }
       <Dialog
         open={open}
@@ -116,10 +116,10 @@ function Open(props) {
         <DialogTitle style={{backgroundColor: '#303030'}}id="alert-dialog-title">{`Delete open bet?`}</DialogTitle>
         <DialogActions style={{backgroundColor: '#303030'}}>
           <Button style={{backgroundColor: '#303030', color: 'white'}} onClick={handleClose} color="primary">
-            Cancel
+            Annuler
               </Button>
           <Button style={{backgroundColor: '#303030', color: 'white'}} onClick={() => handleDelete(betToDelete)} color="primary" autoFocus>
-            Yes
+            Oui
             </Button>
         </DialogActions>
       </Dialog>

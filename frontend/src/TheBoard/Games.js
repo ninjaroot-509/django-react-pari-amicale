@@ -21,6 +21,9 @@ const useStyles = makeStyles({
     backgroundColor: '#151515',
     textAlign: 'center'
   },
+  tableBody: {
+    backgroundColor: 'white',
+  }
 });
 
 function SimpleTable(props) {
@@ -49,29 +52,31 @@ function SimpleTable(props) {
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell style={{color: 'white'}} align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Game</TableCell>
-                <TableCell style={{color: 'white'}} align="left">Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TableCell>
+                <TableCell style={{color: 'white'}} align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Matchs</TableCell>
+                <TableCell style={{color: 'white'}} align="center">Type</TableCell>
+                <TableCell style={{color: 'white'}} align="right">heure de début&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TableCell>
               </TableRow>
             </TableHead>
             <TableBody className={classes.tableBody}>
               {games.map((game, i) => {
                 return (
                   <TableRow key={game.id} onClick={() => history.push(`/match-details/${game.id}`)}>
-                    <TableCell style={{color: 'white'}} align="left">
+                    <TableCell style={{color: '#000'}} align="left">
                       <Grid container alignItems="center" >
                         <Grid item style={{verticalAlign: "middle"}} xs={12}>
-                          {game.team1} 
+                          <b>{game.team1}</b> 
                         </Grid>
-                        <Grid item style={{textAlign: "middle"}} xs={12}>
+                        <Grid item style={{textAlign: "middle", color: 'green'}} xs={12}>
                           VS
                         </Grid>
                         <Grid item style={{verticalAlign: "middle"}} xs={12}>
                           {/* <img style={{verticalAlign: "middle"}} src={game.home_team_logo} alt={game.home_team} width="20" height="20" /> */}
-                          {game.team2}
+                          <b>{game.team2}</b>
                         </Grid>
                       </Grid>
                     </TableCell>
-                    <TableCell style={{color: 'white'}} align="left">
+                    <TableCell style={{color: '#000'}} align="center">{game.sport_key}</TableCell>
+                    <TableCell style={{color: '#000'}} align="center">
                       {moment(game.commence_time).calendar()}
                     </TableCell>
                   </TableRow>

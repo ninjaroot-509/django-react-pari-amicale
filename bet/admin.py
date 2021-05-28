@@ -117,23 +117,7 @@ def update_game_list(modeladmin, request, queryset):
         for obj in objs:
             verif = Game.objects.filter(api_id=obj['id'])
             if not verif.exists():
-                if obj['sport_key'] == 'basketball_nba':
-                    Game.objects.create(
-                        api_id=obj['id'], 
-                        sport_key=obj['sport_key'], 
-                        sport_nice=obj['sport_nice'], 
-                        team1=obj['teams'][0], 
-                        team2=obj['teams'][1],
-                        home_team=obj['home_team'],
-                        commence_time=obj['commence_time'],
-                        site_key=obj['sites'][0]['site_key'],
-                        site_nice=obj['sites'][0]['site_nice'],
-                        last_update=obj['sites'][0]['last_update'],
-                        win=obj['sites'][0]['odds']['h2h'][0],
-                        lose=obj['sites'][0]['odds']['h2h'][1],
-                        is_basket=True
-                    )
-                elif obj['sport_key'] == 'soccer_epl':
+                if obj['sport_key'].lower()[0:6] == 'soccer':
                     Game.objects.create(
                         api_id=obj['id'], 
                         sport_key=obj['sport_key'], 
@@ -150,7 +134,7 @@ def update_game_list(modeladmin, request, queryset):
                         lose=obj['sites'][0]['odds']['h2h'][1],
                         is_foot=True
                     )
-                elif obj['sport_key'] == 'baseball_mlb':
+                else:
                     Game.objects.create(
                         api_id=obj['id'], 
                         sport_key=obj['sport_key'], 
@@ -164,10 +148,8 @@ def update_game_list(modeladmin, request, queryset):
                         last_update=obj['sites'][0]['last_update'],
                         win=obj['sites'][0]['odds']['h2h'][0],
                         lose=obj['sites'][0]['odds']['h2h'][1],
-                        is_baseball=True
+                        is_other=True
                     )
-                else:
-                    print('error request')
 
 update_game_list.short_description = 'update game list'
 
@@ -177,8 +159,7 @@ class GameAdmin(admin.ModelAdmin):
         'team2',
         'commence_time',
         'is_foot',
-        'is_basket',
-        'is_baseball',
+        'is_other',
         'is_end'
     ]
     list_editable = ['is_end',]

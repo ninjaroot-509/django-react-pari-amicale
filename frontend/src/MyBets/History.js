@@ -15,7 +15,7 @@ const useStyles = makeStyles({
     marginTop: '4.5em',
     paddingLeft: '24px',
     paddingRight: '24px',
-    backgroundColor: '#151515',
+    color: '#151515',
   }
 });
 
@@ -107,7 +107,7 @@ function History(props) {
           </Table>
           </TableContainer>
         :
-        <Typography color="textPrimary" className={classes.conditionalText}>You haven't completed any bets yet.</Typography>
+        <Typography color="textPrimary" className={classes.conditionalText}>Vous n'avez pas encore terminé de paris.</Typography>
       }
     </>
   );

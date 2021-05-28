@@ -8,12 +8,12 @@ import OpenBetRow from './OpenBetRow';
 const useStyles = makeStyles({
   tableContainer: {
     marginTop: '2.9em',
-    backgroundColor: '#151515',
+    backgroundColor: 'white',
   },
   conditionalText: {
     padding: '24px',
     paddingTop: '32px',
-    backgroundColor: '#151515',
+    color: '#151515',
     textAlign: 'center'
   },
 });
@@ -51,10 +51,10 @@ function OpenBets(props) {
           <Table aria-label="simple table" className={classes.table}>
             <TableHead>
               <TableRow>
-                <TableCell align="left" style={{color: 'white'}}>Amis</TableCell>
-                <TableCell align="left" style={{color: 'white'}}>Equipes</TableCell>
-                <TableCell align="left" style={{color: 'white'}}>Proposition</TableCell>
-                <TableCell align="center" style={{color: 'white'}}>temps</TableCell>
+                <TableCell align="left" style={{color: '#000', fontWeight: 'bold'}}>Amis</TableCell>
+                <TableCell align="left" style={{color: '#000', fontWeight: 'bold'}}>Equipes</TableCell>
+                <TableCell align="left" style={{color: '#000', fontWeight: 'bold'}}>Propositions</TableCell>
+                <TableCell align="center" style={{color: '#000', fontWeight: 'bold'}}>heure de début&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

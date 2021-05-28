@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '1.5em',
     paddingLeft: '24px',
     paddingRight: '24px',
-    color: 'white',
+    color: '#151515',
   },
   tableContainer: {
     marginTop: '4em',
@@ -61,14 +61,14 @@ function FriendsListItem(props) {
                 {friendsList.map((friend) =>
                   <ListItem key={friend.id} onClick={() => { props.history.push(`/friends/statistics/${friend.id}`) }}>
                     <ListItemAvatar>
-                      <Avatar src={'http://localhost:8000' + friend.photo}
+                      <Avatar src={friend.photo}
                         className={classes.avatar}>
                           {friend.username}
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={<Typography style={{color: 'white'}}>{friend.first_name} {friend.last_name}</Typography>}
-                      secondary={<Typography style={{color: 'white'}}>{friend.username}</Typography>}
+                      primary={<Typography style={{color: '#000'}}>{friend.first_name} {friend.last_name}</Typography>}
+                      secondary={<Typography style={{color: '#000'}}>{friend.username}</Typography>}
                     />
                   </ListItem>,
                 )}

@@ -6,7 +6,6 @@ import { AppBar, Tabs, Tab, Box }from '@material-ui/core/';
 import Open from './Open';
 import History from './History';
 import Active from './Active'
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -54,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'fixed',
     width: '100%',
     marginTop: '0',
+    backgroundColor: '#151515',
   },
 }));
 
@@ -74,9 +74,9 @@ function SimpleTabs(props) {
     <div className={classes.root}>
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" className={classes.mainTab}>
-          <Tab label={`Open (${openBetsLength})`} {...a11yProps(0)} className={classes.tabs}/>
-          <Tab label={`Active (${activeBetsLength})`} {...a11yProps(1)} className={classes.tabs}/>
-          <Tab label={`History (${historyBetsLength})`} {...a11yProps(2)} className={classes.tabs}/>
+          <Tab label={`Ouverts (${openBetsLength})`} {...a11yProps(0)} className={classes.tabs}/>
+          <Tab label={`Actives (${activeBetsLength})`} {...a11yProps(1)} className={classes.tabs}/>
+          <Tab label={`Historiques (${historyBetsLength})`} {...a11yProps(2)} className={classes.tabs}/>
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>

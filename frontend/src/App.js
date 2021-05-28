@@ -10,7 +10,7 @@ import AddBet from './AddBet/AddBet'
 import BottomNavBar from './BottomNavBar/BottomNavBar';
 import { Route, Switch, HashRouter as Router } from 'react-router-dom'
 // import { Router } from "react-router";
-
+import 'moment/locale/fr'
 import NotFound from './Views/NotFound';
 import Lotto from './Lotto/Lotto';
 import Start from './TicTac/components/pages/Start';

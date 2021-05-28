@@ -188,7 +188,7 @@ class BetView(APIView):
             # tokenview = AuthToken.objects.get(token_key=key).user
             user = User.objects.get(pk=tokenview)
             now = datetime.now()
-            bets = Bet.objects.filter(game__bet__commence_time__gte=now,is_active=False)
+            bets = Bet.objects.filter(game__commence_time__gte=now,is_active=False)
             for f in bets:
                 if f.owner.profile not in user.profile.friends.all():
                     bets = bets.exclude(owner=f.owner) 
@@ -249,7 +249,7 @@ class MyBetView(APIView):
             # tokenview = AuthToken.objects.get(token_key=key).user
             user = User.objects.get(pk=tokenview)
             now = datetime.now()
-            bets = Bet.objects.filter(game__bet__commence_time__gte=now, owner=user, is_active=False)  
+            bets = Bet.objects.filter(game__commence_time__gte=now, owner=user, is_active=False)  
             serializer = BetSerializer(bets, many=True)
             return JsonResponse(serializer.data, safe=False)
 

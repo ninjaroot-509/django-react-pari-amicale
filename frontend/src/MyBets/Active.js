@@ -12,7 +12,7 @@ const useStyles = makeStyles({
     marginTop: '4.5em',
     paddingLeft: '24px',
     paddingRight: '24px',
-    backgroundColor: '#151515',
+    color: '#151515',
   }
 });
 
@@ -96,7 +96,7 @@ function Active(props) {
           </Table>
         </TableContainer>
         :
-        <Typography color="textPrimary" className={classes.conditionalText}>You don't have any active bets right now.</Typography>
+        <Typography color="textPrimary" className={classes.conditionalText}>Vous n'avez pas de paris actifs en ce moment.</Typography>
       }
     </>
   );

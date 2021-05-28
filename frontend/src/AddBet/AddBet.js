@@ -39,10 +39,15 @@ const useStyles = makeStyles((theme) => ({
   },
   gameDate: {
     position: 'absolute',
+    textAlign: 'center',
     top: '4.8em',
     left: '7.2em',
     paddingTop: '.2em',
+    color: 'white'
   },
+  team: {
+    color: 'white'
+  }
 }));
 
 const AddBet = ({history}) => {
@@ -74,14 +79,14 @@ const AddBet = ({history}) => {
           <ArrowBackIcon className={classes.backButton} />
         </Button>
         {/* <img src={game.team1} alt={game.team1} width="70" height="70" /> */}
-        <Typography color="textPrimary">{game.team1}</Typography>
+        <Typography color="textPrimary" className={classes.team}>{game.team1}</Typography>
         <AlternateEmailIcon className={classes.atLogo} />
         {/* <img src={game.team2} alt={game.team2} width="70" height="70" /> */}
-        <Typography color="textPrimary">{game.team2}</Typography>
-        {/* <Typography color="textPrimary" className={classes.gameDate}>2 juin</Typography> */}
+        <Typography color="textPrimary" className={classes.team}>{game.team2}</Typography>
+        <Typography color="textPrimary" className={classes.gameDate}>{moment(game.commence_time).calendar()}</Typography>
       </div>
       <div className={classes.tabPanel}>
-          <CreateBetForm game={game}/>
+          <CreateBetForm game={game} history={history}/>
       </div>
     </div>
     </>

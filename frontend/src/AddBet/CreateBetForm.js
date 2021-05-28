@@ -26,14 +26,14 @@ const useStyles = makeStyles({
         marginTop: '2em',
     },
     formControlLabel: {
-        color: 'white',
+        color: '#000',
     },
     text: {
         margin: '1em',
         backgroundColor: '#151515',
     },
     radioColor: {
-        color: 'white',
+        color: '#000',
     },
     unitsInput: {
         backgroundColor: 'white',
@@ -44,7 +44,7 @@ const useStyles = makeStyles({
 
 });
 
-function CreateBetForm({game}) {
+function CreateBetForm({game,history}) {
 
     const classes = useStyles();
     const user = getUser()
@@ -56,14 +56,6 @@ function CreateBetForm({game}) {
     const [vteam2, setVTeam2] = useState(false);
     const [prix, setPrix] = useState('');
     const [winning_equipe, setWinningEquipe] = useState('');
-    
-
-    useEffect(()=>{
-       console.log(prix + ' Gourdes')
-       console.log(winning_equipe + '++')
-       console.log(vteam1 + ' team1')
-       console.log(vteam2 + ' team2')
-    })
 
     // opens the dialog to confirm bet
     const handleClickOpen = () => {
@@ -104,6 +96,7 @@ function CreateBetForm({game}) {
             if (token) config.headers['Authorization'] = `Token ${token}`
             axios.post(`http://localhost:8000/api/add-bet/`, JSON.stringify({game: game.id, prix: prix, winning_equipe: winning_equipe}), config)
             .then(res => {
+                history.push('/mybets')
                 alert("Votre pari est place");
             })
             .catch(err => {
