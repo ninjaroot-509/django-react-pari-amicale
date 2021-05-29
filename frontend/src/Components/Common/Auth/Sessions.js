@@ -1,6 +1,7 @@
-export const setUserSession = (token, user, wallet, coin) => {
+export const setUserSession = (token, user, profile) => {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('profile', JSON.stringify(profile));
 }
 
 export const getToken = () => {
@@ -13,10 +14,14 @@ export const getUser = () => {
     else return null;
 }
 
+export const getProfile = () => {
+    const profileStr = localStorage.getItem('profile');
+    if (profileStr) return JSON.parse(profileStr);
+    else return null;
+}
+
 export const removeUserSession = () => {
     window.localStorage.removeItem('token');
     window.localStorage.removeItem('user');
     window.localStorage.removeItem('profile');
-    window.localStorage.removeItem('wallet');
-    window.localStorage.removeItem('coin');
 }

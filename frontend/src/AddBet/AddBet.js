@@ -26,27 +26,32 @@ const useStyles = makeStyles((theme) => ({
   heading: {
     textAlign: 'center',
     display: 'flex',
-    height: '5em',
+    height: '9em',
     paddingTop: '.75em',
     paddingBottom: '.75em',
-    position: 'fixed',
+    position: 'absolute',
     width: '100%',
     top: 0,
     backgroundColor: '#303030',
   },
   tabPanel: {
-    marginTop: '6.5em',
+    paddingTop: '50%',
   },
   gameDate: {
     position: 'absolute',
     textAlign: 'center',
-    top: '4.8em',
-    left: '7.2em',
+    top: '9em',
+    left: '8.2em',
     paddingTop: '.2em',
     color: 'white'
   },
   team: {
     color: 'white'
+  },
+  logo: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 }));
 
@@ -68,7 +73,6 @@ const AddBet = ({history}) => {
     if (game.length === 0) {
       getgame()
     }
-    console.log(game)
   })
   
   return (
@@ -78,17 +82,21 @@ const AddBet = ({history}) => {
         <Button onClick={handleBack}>
           <ArrowBackIcon className={classes.backButton} />
         </Button>
-        {/* <img src={game.team1} alt={game.team1} width="70" height="70" /> */}
-        <Typography color="textPrimary" className={classes.team}>{game.team1}</Typography>
+        <div>
+          <img src={process.env.PUBLIC_URL + '/static/assets/img/icons/sports.png'} alt={game.team1} width="70" height="70" />
+          <Typography color="textPrimary" className={classes.team}>{game.team1}</Typography>
+        </div>
         <AlternateEmailIcon className={classes.atLogo} />
-        {/* <img src={game.team2} alt={game.team2} width="70" height="70" /> */}
-        <Typography color="textPrimary" className={classes.team}>{game.team2}</Typography>
+        <div>
+          <img src={process.env.PUBLIC_URL + '/static/assets/img/icons/sports.png'} alt={game.team2} width="70" height="70" />
+          <Typography color="textPrimary" className={classes.team}>{game.team2}</Typography>
+        </div>
         <Typography color="textPrimary" className={classes.gameDate}>{moment(game.commence_time).calendar()}</Typography>
       </div>
+    </div>
       <div className={classes.tabPanel}>
           <CreateBetForm game={game} history={history}/>
       </div>
-    </div>
     </>
   );
 }

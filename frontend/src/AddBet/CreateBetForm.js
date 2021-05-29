@@ -52,10 +52,10 @@ function CreateBetForm({game,history}) {
 
     // state hook to handle opening dialog
     const [open, setOpen] = useState(false);
-    const [vteam1, setVTeam1] = useState(false);
+    const [vteam1, setVTeam1] = useState(true);
     const [vteam2, setVTeam2] = useState(false);
     const [prix, setPrix] = useState('');
-    const [winning_equipe, setWinningEquipe] = useState('');
+    const [winning_equipe, setWinningEquipe] = useState('team1');
 
     // opens the dialog to confirm bet
     const handleClickOpen = () => {
@@ -100,7 +100,7 @@ function CreateBetForm({game,history}) {
                 alert("Votre pari est place");
             })
             .catch(err => {
-                alert("Erreur " + err);
+                alert("Erreur: Votre solde est insuffisant");
             })
         }
 
@@ -111,7 +111,7 @@ function CreateBetForm({game,history}) {
     return (
         <FormControl margin="normal" component="fieldset">
             <Grid container justify="center" alignItems="center">
-                <Grid item>Remplir les champs pour creer votre pari</Grid>
+                <Grid item>Choisissez l'équipe gagnant</Grid>
                 <Grid item xs={12}>
                     
                     <>
@@ -120,7 +120,7 @@ function CreateBetForm({game,history}) {
                             <FormControlLabel
                                 value={vteam1}
                                 control={<Radio />}
-                                label={'Victoire ' + game.team1}
+                                label={game.team1}
                                 name={game.team1}
                                 labelPlacement="bottom"
                                 checked={winning_equipe === "team1"}
@@ -129,7 +129,7 @@ function CreateBetForm({game,history}) {
                             <FormControlLabel
                                 value={vteam2}
                                 control={<Radio />}
-                                label={'Victoire ' + game.team2}
+                                label={game.team2}
                                 name={game.team2}
                                 labelPlacement="bottom"
                                 checked={winning_equipe === "team2"}
@@ -140,14 +140,21 @@ function CreateBetForm({game,history}) {
                         <Dialog open={open} onClose={handleCreateBet} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
                             <DialogTitle id="alert-dialog-title">Confirmer la mise</DialogTitle>
                             <DialogContent>
-                                {winning_equipe === 'team1' ?
+                                {prix? 
+                                    winning_equipe === 'team1' ?
                                     <DialogContentText>Le Parie sera placé sur L'equipe <b>{game.team1}</b> pour {prix} Gourdes.</DialogContentText>
                                     :
-                                    <DialogContentText>Le Parie sera placé sur L'equipe <b>{game.team2}</b> pour {prix} Gourdes.</DialogContentText>}
+                                    <DialogContentText>Le Parie sera placé sur L'equipe <b>{game.team2}</b> pour {prix} Gourdes.</DialogContentText>
+                                :
+                                    <DialogContentText>Entrez le montant que vous souhaitez placer ce pari</DialogContentText>
+                                }
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={cancelBet}>Annuler</Button>
+                                {prix? 
                                 <Button onClick={handleCreateBet}>Confirmer</Button>
+                                :
+                                ''}
                             </DialogActions>
                         </Dialog>
                     </>
@@ -158,12 +165,13 @@ function CreateBetForm({game,history}) {
                         color="secondary"
                         type="number"
                         value={prix}
-                        placeholder="prix"
+                        placeholder="prix en gourdes"
                         name="prix"
                         variant="outlined"
                         onChange={handleInputChange}
                         className={classes.unitsInput}
                     />
+                    <b>gourdes</b>
                 </Grid>
                 <Button
                     variant="contained"

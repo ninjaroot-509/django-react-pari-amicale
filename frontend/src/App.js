@@ -57,6 +57,7 @@ const App = () => {
               <PrivateRoute
                 exact
                 path='/mybets'
+                history={history}
                 component={MyBets}
               />
               <PrivateRoute

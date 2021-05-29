@@ -51,7 +51,7 @@ const Register = ({ history }) => {
             const config = { headers: { 'Content-Type': 'application/json' } }
             axios.post('http://localhost:8000/api/auth/register', body, config)
                 .then(res => {
-                    setUserSession(res.data.token, res.data.user);       // REG OK   
+                    setUserSession(res.data.token, res.data.user, res.data.profile);       // REG OK   
                     addNotification({
                         title: 'Warning',
                         subtitle: 'QuizaPay!',
@@ -80,7 +80,7 @@ const Register = ({ history }) => {
         <Container>
         <Grid container justify="center" alignItems="center" spacing={4}>
           <Grid item xs={12} style={{textAlign: "center", color: "white"}}>
-            <Typography variant="h3" style={{padding: "50px"}}>Pari amical</Typography>
+            <Typography variant="h3" style={{padding: "45px"}}>Pari amical</Typography>
           </Grid>
           <Grid item xs={12} style={{textAlign: "center", padding: "2px"}}>
             <svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 1008.88 822.802">

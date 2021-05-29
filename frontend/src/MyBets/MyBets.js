@@ -41,7 +41,7 @@ const useStyles = makeStyles({
   },
 });
 
-const MyBets = () => {
+const MyBets = ({history}) => {
 
     const classes = useStyles();
 

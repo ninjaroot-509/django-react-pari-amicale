@@ -46,7 +46,7 @@ function Open(props) {
     if (token) config.headers['Authorization'] = `Token ${token}`
     axios.post(`http://localhost:8000/api/delete-bet/`, JSON.stringify({bet_id: id}), config)
     .then(res => {
-        alert("Votre pari est efface avec succes!");
+        alert("le pari a été effacé avec succès!");
     })
     .catch(err => {
         alert("Erreur " + err);
@@ -54,18 +54,24 @@ function Open(props) {
     handleClose();
   }
 
+  const [temp, setTemp] = useState(0)
+
   const [mybets, setMyBet] = useState([])
     
-    useEffect(()=>{
-        if (mybets.length === 0) {
-          getmybets()
-        }
-    }, [])
 
+  const getmybets = () => {
+    request.getMyBet().then(res => setMyBet(res))
+  }
 
-    const getmybets = () => {
-      request.getMyBet().then(res => setMyBet(res))
-    }
+  useEffect(()=>{
+      setInterval(()=>{
+          setTemp((prevTemp)=>prevTemp+1)
+      }, 4000)
+  }, [])
+
+  useEffect(()=>{
+    getmybets()
+  }, [temp])
 
   return (
     <>
@@ -101,6 +107,7 @@ function Open(props) {
                   </TableCell>
                 </TableRow>
               ))}
+              <br />
             </TableBody>
           </Table>
         </TableContainer>

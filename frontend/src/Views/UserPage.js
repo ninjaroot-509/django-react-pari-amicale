@@ -1,16 +1,78 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import request from '../Components/Common/HttpRequests'
-import { getUser, getToken, removeUserSession } from '../Components/Common/Auth/Sessions'
-import axios from 'axios'
-import { useToasts } from 'react-toast-notifications';
+import React, { useState,useRef } from 'react';
+import { Typography, Grid, Button, Avatar, TextField} from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import axios from 'axios';
+import { makeStyles } from '@material-ui/core/styles';
+import { getUser, getToken, getProfile, removeUserSession } from '../Components/Common/Auth/Sessions'
 
-// TODO: Modifier les requêtes créées précédemment
+const useStyles = makeStyles({
+    heading: {
+        paddingTop: '1em',
+        paddingBottom: '1em',
+        textAlign: 'center',
+        position: 'fixed',
+        width: '100%',
+        top: 0,
+        backgroundColor: '#303030',
+        height: '4.5em',
+    },
+    avatarLogo : {
+        width: '4em',
+        height: '4em',
+       position: 'relative',
+    },
+    container: {
+        height: '50vh',
+        position: 'fixed',
+    },
+    info: {
+        marginTop: '6.5em',
+        paddingTop: '3em',
+        width: '100%' 
+    },
+    profilePicture: {
+        paddingBottom: '3em',
+    },
+    headingText: {
+        marginTop: '.5em',
+    },
+    button: {
+        marginTop: '1em'
+    },
+    cssLabel: {
+        color: '#000'
+      },
+    logOutButton: {
+        paddingTop: '3em'
+    },
+    headingTextGroup: {
+        paddingRight: '1em',
+    },
+    multilineColor: {
+        color: '#01FF70',
+        borderColor: 'green !important'
+      },
+      borderColor: {
+        color: '#000 !important',
+        borderColor: '#000 !important',
+      },
+      notchedOutline: {
+        borderWidth: '1px',
+        borderColor: '#000 !important'
+      },
+});
 
-const UserPage = () => {
-    const user = getUser()
+
+
+const Profile = () => {
+    const uploadInputRef = useRef(null);
+  const [open, setOpen] = useState(false);
+  const user = getUser()
     const token = getToken()
-    const [profile, setProfile] = useState([])
+    const [photo, setPhoto] = useState()
+    const profile = getProfile()
     
     const [username, setUsername] = useState()
     const [email, setEmail] = useState()
@@ -18,187 +80,311 @@ const UserPage = () => {
     const [last_name, setLastName] = useState()
     const [phone, setPhone] = useState()
     const [bio, setBio] = useState()
-    const [photo, setPhoto] = useState()
-    const photoUrl = 'https://quizapay.com' + profile.photo
-    const [temp, setTemp] = useState(0)
-    const { addToast } = useToasts()
+
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleChange = (ev) => {
+    if (ev.target.name === 'username') setUsername(ev.target.value)
+    else if (ev.target.name === 'email') setEmail(ev.target.value)
+    else if (ev.target.name === 'first_name') setFirstName(ev.target.value)
+    else if (ev.target.name === 'last_name') setLastName(ev.target.value)
+    else if (ev.target.name === 'bio') setBio(ev.target.value)
+    else if (ev.target.name === 'phone') setPhone(ev.target.value)
+    else if (ev.target.name === 'photo') setPhoto(ev.target.files[0])
+}
+
+const handleSubmitClick = (ev) => {
+    ev.preventDefault()
     
-    useEffect(()=>{
-        setInterval(()=>{
-            setTemp((prevTemp)=>prevTemp+1)
-        }, 5000)
-    }, [])
+    let formData = new FormData()
+    if (username) {
+        formData.append('username', username)
+    }
+    if (first_name) {
+        formData.append('first_name', first_name)
+    }
+    if (last_name) {
+        formData.append('last_name', last_name)
+    }
+    if (email) {
+        formData.append('email', email)
+    }
+    if (phone) {
+        formData.append('phone', phone)
+    }
+    if (bio) {
+        formData.append('bio', bio)
+    }
+    if (photo) {
+        formData.append('photo', photo)
+    }
+    const config = { headers: { 'Content-Type': 'application/json' } }
+    if (token) config.headers['Authorization'] = `Token ${token}`
+    axios.post(`http://localhost:8000/api/profile/`, formData, config)
+    .then(res => {
+        const userE={
+            "id": user.id,
+            "username": `${username? username : user.username }`,
+            "first_name": `${first_name? first_name : user.first_name}`,
+            "last_name": `${last_name? last_name : user.last_name}`,
+            "email": `${email? email : user.email }`,
+            "password": user.password,
+            "last_login": user.last_login,
+            "is_superuser": user.is_superuser,
+            "is_staff": user.is_staff,
+            "is_active": user.is_active,
+            "date_joined": user.date_joined,
+            "groups":[],
+            "user_permissions":[]
+        }
+        const profileE={
+            "id": profile.id,
+            "bio": `${bio? bio : profile.bio }`,
+            "phone": `${phone? phone : profile.phone }`,
+            "photo": profile.photo,
+            "user": profile.user
+        }
+        window.localStorage.setItem('user', JSON.stringify(userE))
+        window.localStorage.setItem('profile', JSON.stringify(profileE))
+        // setTimeout(() => window.location.reload(), 1000)
+        handleClose()
+    })
+    
+    .catch(err => {
+        alert("profile error! " + err)
+    })
+    
+}
 
-    useEffect(()=>{
-        getprofile()
-    }, [temp])
 
-    const getprofile = () => {
-        if (getUser()) {
-            request.getProfile().then(res => setProfile(res))
-        }
-    }
-
-    const handleChange = (ev) => {
-        if (ev.target.name === 'username') setUsername(ev.target.value)
-        else if (ev.target.name === 'email') setEmail(ev.target.value)
-        else if (ev.target.name === 'first_name') setFirstName(ev.target.value)
-        else if (ev.target.name === 'last_name') setLastName(ev.target.value)
-        else if (ev.target.name === 'bio') setBio(ev.target.value)
-        else if (ev.target.name === 'phone') setPhone(ev.target.value)
-        else if (ev.target.name === 'photo') setPhoto(ev.target.files[0])
-    }
-    const notify = () => {
-        addToast("Votre profile a ete mise a jour!", {appearance: 'success', autoDismiss: true})
-    }
-    const handleSubmitClick = (ev) => {
-        ev.preventDefault()
-        
-        let formData = new FormData()
-        if (username) {
-            formData.append('username', username)
-        }
-        if (first_name) {
-            formData.append('first_name', first_name)
-        }
-        if (last_name) {
-            formData.append('last_name', last_name)
-        }
-        if (email) {
-            formData.append('email', email)
-        }
-        if (phone) {
-            formData.append('phone', phone)
-        }
-        if (bio) {
-            formData.append('bio', bio)
-        }
-        if (photo) {
-            formData.append('photo', photo)
-        }
-        const config = { headers: { 'Content-Type': 'application/json' } }
-        if (token) config.headers['Authorization'] = `Token ${token}`
-        axios.post(`https://quizapay.com/api/profile/`, formData, config)
-        .then(res => {
-            notify()
-            const userE={
-                "id": user.id,
-                "username": `${username? username : user.username }`,
-                "first_name": `${first_name? first_name : user.first_name}`,
-                "last_name": `${last_name? last_name : user.last_name}`,
-                "email": `${email? email : user.email }`,
-                "password": user.password,
-                "last_login": user.last_login,
-                "is_superuser": user.is_superuser,
-                "is_staff": user.is_staff,
-                "is_active": user.is_active,
-                "date_joined": user.date_joined,
-                "groups":[],
-                "user_permissions":[]
-            }
-            window.localStorage.setItem('user', JSON.stringify(userE))
-            // setTimeout(() => window.location.reload(), 1000)
-        })
-        
-        .catch(err => {
-            addToast("profile error! " + err, {appearance: 'error', autoDismiss: true})
-        })
-        
-    }
-    const photoView = photo? URL.createObjectURL(photo) : photoUrl
+    const classes = useStyles();
 
     return (
-        <section className="absolute">
-            <div className="rounded-lg d-block d-sm-flex">
-                <div className="profile-tab-nav border-right">
-                    <div className="p-4">
-                        <div className="img-circle flex justify-center mb-3">
-                            <img src={photoView} alt={user.username} className="shadow" />
-                        </div>
-                        <h4 className="text-center">{user.username}</h4>
-                    </div>
-                    <div className="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        <Link to="#" className="nav-link active">
-                            <i className="fa fa-home text-center mr-1"></i> Compte
-                        </Link>
-                        <Link to="#" className="nav-link">
-                            <i className="fa fa-key text-center mr-1"></i> Changer de mot de passe
-                        </Link>
-                        <Link to={`/depot/moncash/`} className="nav-link">
-                            <i className="fa fa-dollar-sign text-center mr-1"></i> Recharger mon compte
-                        </Link>
-                        <Link to={`/convertir/`} className="nav-link">
-                            <i className="fa fa-dollar-sign text-center mr-1"></i> Acheter plus coins
-                        </Link>
-                        <Link to={`/retrait/moncash/`} className="nav-link">
-                            <i className="fa fa-dollar-sign text-center mr-1"></i> Faire un retrait
-                        </Link>
-                        <Link to='/' className="nav-link"
-                            onClick={() => {
-                                removeUserSession()
-                                window.location.reload()
-                            }}>
-                            <i className="fa fa-sign-out text-center mr-1"></i> Deconnecter
-                        </Link>
-                    </div>
-                </div>
-                <div className="tab-content p-4 p-md-5">
-                    <div className="tab-pane fade show active">
-                        <h3 className="mb-4">Mon Profile</h3>
-                        <div className="row">
-                            <div className="col-md-12">
-                                <div className="form-group">
-                                    <label>Pseudo</label>
-                                    <input type="text" onChange={handleChange} name='username' className="form-control" placeholder={user.username} />
-                                </div>
-                            </div>
-                            <hr />
-                            <div className="col-md-6">
-                                <div className="form-group">
-                                    <label>Nom</label>
-                                    <input type="text" onChange={handleChange} name='last_name' className="form-control" placeholder={user.last_name} />
-                                </div>
-                            </div>
-                            <div className="col-md-6">
-                                <div className="form-group">
-                                    <label>Prenom</label>
-                                    <input type="text" onChange={handleChange} name='first_name' className="form-control" placeholder={user.first_name} />
-                                </div>
-                            </div>
-                            <div className="col-md-6">
-                                <div className="form-group">
-                                    <label>Email</label>
-                                    <input type="text" onChange={handleChange} name='email' className="form-control" placeholder={user.email} />
-                                </div>
-                            </div>
-                            <div className="col-md-6">
-                                <div className="form-group">
-                                    <label>Numero de telephone</label>
-                                    <input type="phone" onChange={handleChange} name='phone' className="form-control" placeholder={profile.phone} />
-                                </div>
-                            </div>
-                            <div className="col-md-12">
-                                <div className="form-group">
-                                    <label className="custom-file-label" htmlFor="customFileLang">Sélectionner une photo pour changer </label>
-                                    <input type="file" onChange={handleChange} name='photo' className="custom-file-input" id="customFileLang" lang="fr"/>
-                                </div>
-                            </div>
-                            <div className="col-md-12">
-                                <div className="form-group">
-                                    <label>Bio</label>
-                                    <textarea onChange={handleChange} name='bio' className="form-control" rows="4">{profile.bio}</textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <button onClick={handleSubmitClick} className="btn btn-primary btn-lg btn-block">sauvegarder</button>
-                            {/* <button className="btn btn-light">Annuler</button> */}
-                        </div>
-                    </div>
-                </div>
+        <>
+        <div className={classes.container}>
+            <div className={classes.heading}>
+                <Typography variant="h4" className={classes.headingText} style={{color: 'white'}}>My Profile</Typography>
+                
             </div>
-        </section>
-    )
+            <div className={classes.info}>
+            <Grid container align="center" justify="center" alignItems="center" >
+                <div className={classes.profilePicture}>
+                <Grid item xs={12}> 
+                    <Avatar className={classes.avatarLogo} src={profile.photo}>{user.username}</Avatar>
+                </Grid>
+                <Grid item xs={12}>
+                    <Button variant="contained" onClick={handleOpen} className={classes.button} color="primary">Modifier mon profile</Button>
+                </Grid>
+                </div>
+                <Grid item xs={12}>
+                    <Typography style={{color: '#000'}}>Pseudo: {user.username}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography  style={{color: '#000'}}>Nom: {user.last_name}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography style={{color: '#000'}}>Prenom: {user.first_name}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography  style={{color: '#000'}}>Email: {user.email}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography  style={{color: '#000'}}>numero moncash: {profile.phone}</Typography>
+                </Grid>
+            </Grid>
+            </div>           
+            <center>
+            <div className={classes.logOutButton}>
+            <Button variant="contained" 
+                    onClick={() => {
+                        removeUserSession()
+                        window.location.reload() 
+                    }} style={{backgroundColor: 'red', color: 'white'}}>Deconnecter</Button>
+            </div>
+            </center>
+            </div>
+            <Dialog  
+                fullWidth={true}
+                maxWidth="lg" 
+                open={open} 
+                onClose={handleClose} 
+                aria-labelledby="form-dialog-title">
+            <DialogContent style={{backgroundColor: 'white'}}>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        onChange={handleChange}
+                        name="username"
+                        label="Pseudonyme"
+                        type="text"
+                        placeholder={user.username}
+                        fullWidth
+                        InputProps={{
+                        classes: {
+                            root: classes.notchedOutline,
+                            focused: classes.multilineColor,
+                        },
+                    }}
+                    InputLabelProps={{
+                        classes: {
+                            root: classes.cssLabel,
+                            focused: classes.borderColor,
+                        }
+                        }}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        defaultValue=''
+                        onChange={handleChange}
+                        name="last_name"
+                        label="Nom"
+                        type="text"
+                        placeholder={user.last_name}
+                        fullWidth
+                        InputProps={{
+                        classes: {
+                            root: classes.notchedOutline,
+                            focused: classes.multilineColor,
+                        },
+                    }}
+                    InputLabelProps={{
+                        classes: {
+                            root: classes.cssLabel,
+                            focused: classes.borderColor,
+                        }
+                        }}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        defaultValue=''
+                        onChange={handleChange}
+                        name="first_name"
+                        label="Prenom"
+                        type="text"
+                        placeholder={user.first_name}
+                        fullWidth
+                        InputProps={{
+                        classes: {
+                            root: classes.notchedOutline,
+                            focused: classes.multilineColor,
+                        },
+                    }}
+                    InputLabelProps={{
+                        classes: {
+                            root: classes.cssLabel,
+                            focused: classes.borderColor,
+                        }
+                        }}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        defaultValue=''
+                        onChange={handleChange}
+                        name="email"
+                        label="Email"
+                        type="email"
+                        placeholder={user.email}
+                        fullWidth
+                        InputProps={{
+                        classes: {
+                            root: classes.notchedOutline,
+                            focused: classes.multilineColor,
+                        },
+                    }}
+                    InputLabelProps={{
+                        classes: {
+                            root: classes.cssLabel,
+                            focused: classes.borderColor,
+                        }
+                        }}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        defaultValue=''
+                        onChange={handleChange}
+                        name="phone"
+                        label="Numero moncash"
+                        type="phone"
+                        placeholder={profile.phone}
+                        fullWidth
+                        InputProps={{
+                        classes: {
+                            root: classes.notchedOutline,
+                            focused: classes.multilineColor,
+                        },
+                    }}
+                    InputLabelProps={{
+                        classes: {
+                            root: classes.cssLabel,
+                            focused: classes.borderColor,
+                        }
+                        }}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        defaultValue=''
+                        onChange={handleChange}
+                        name="bio"
+                        label="Bio"
+                        type="text"
+                        placeholder={profile.bio}
+                        fullWidth
+                        InputProps={{
+                        classes: {
+                            root: classes.notchedOutline,
+                            focused: classes.multilineColor,
+                        },
+                    }}
+                    InputLabelProps={{
+                        classes: {
+                            root: classes.cssLabel,
+                            focused: classes.borderColor,
+                        }
+                        }}
+                    />
+                    <label htmlFor="icon-button-file">
+                    <input
+                        ref={uploadInputRef}
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        name="photo"
+                        onChange={handleChange}
+                        />
+                    <Button
+                        variant="contained"
+                        component="span"
+                        className={classes.button}
+                        size="large"
+                        color="primary"
+                        onClick={() => uploadInputRef.current && uploadInputRef.current.click()}
+                    >
+                        Upload photo
+                    </Button>
+                    </label>
+            </DialogContent>
+            <DialogActions style={{backgroundColor: 'white'}}>
+            <Button style={{color: '#000'}} onClick={handleClose} color="primary">
+                Annuler
+            </Button>
+            <Button style={{color: '#000'}} onClick={handleSubmitClick} color="primary">
+                Sauvegarder
+            </Button>
+            </DialogActions>
+        </Dialog>
+        </>
+    );
 }
-export default UserPage
-
+export default Profile;

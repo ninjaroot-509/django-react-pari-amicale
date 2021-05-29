@@ -46,7 +46,7 @@ const Login = ({ history }) => {
             const body = JSON.stringify({ username, password })
             axios.post( 'http://localhost:8000/api/auth/login', body, config)
             .then(res => { 
-                setUserSession(res.data.token, res.data.user);       // LOGIN OK redirect 
+                setUserSession(res.data.token, res.data.user, res.data.profile);       // LOGIN OK redirect 
                 addNotification({
                     title: 'Warning',
                     subtitle: 'QuizaPay!',
@@ -74,7 +74,7 @@ const Login = ({ history }) => {
         <Container>
         <Grid container justify="center" alignItems="center" spacing={4}>
           <Grid item xs={12} style={{textAlign: "center", color: "white"}}>
-            <Typography variant="h3" style={{padding: "60px"}}>Pari amical</Typography>
+            <Typography variant="h3" style={{padding: "45px"}}>Pari amical</Typography>
           </Grid>
           <Grid item xs={12} style={{textAlign: "center", padding: "5px"}}>
             <svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 1008.88 822.802">

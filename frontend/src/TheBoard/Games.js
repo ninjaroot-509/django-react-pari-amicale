@@ -62,21 +62,22 @@ function SimpleTable(props) {
                 return (
                   <TableRow key={game.id} onClick={() => history.push(`/match-details/${game.id}`)}>
                     <TableCell style={{color: '#000'}} align="left">
-                      <Grid container alignItems="center" >
-                        <Grid item style={{verticalAlign: "middle"}} xs={12}>
-                          <b>{game.team1}</b> 
-                        </Grid>
-                        <Grid item style={{textAlign: "middle", color: 'green'}} xs={12}>
+                      <div>
+                        <div>
+                          <img style={{verticalAlign: "middle"}} src={process.env.PUBLIC_URL + '/static/assets/img/icons/sports.png'} alt={game.home_team} width="35" height="35" />
+                          {game.team1}
+                        </div>
+                        <b style={{color: 'green', margin:'3em'}}>
                           VS
-                        </Grid>
-                        <Grid item style={{verticalAlign: "middle"}} xs={12}>
-                          {/* <img style={{verticalAlign: "middle"}} src={game.home_team_logo} alt={game.home_team} width="20" height="20" /> */}
-                          <b>{game.team2}</b>
-                        </Grid>
-                      </Grid>
+                        </b>
+                        <div>
+                          <img style={{verticalAlign: "middle"}} src={process.env.PUBLIC_URL + '/static/assets/img/icons/sports.png'} alt={game.home_team} width="35" height="35" />
+                          {game.team2}
+                        </div>
+                      </div>
                     </TableCell>
-                    <TableCell style={{color: '#000'}} align="center">{game.sport_key}</TableCell>
-                    <TableCell style={{color: '#000'}} align="center">
+                    <TableCell style={{color: '#000'}} align="center">{game.cate_groupe}</TableCell>
+                    <TableCell style={{color: '#000'}} align="right">
                       {moment(game.commence_time).calendar()}
                     </TableCell>
                   </TableRow>
