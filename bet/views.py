@@ -17,9 +17,10 @@ from django.db.models import F
 from knox.models import AuthToken
 from django.shortcuts import get_object_or_404, redirect
 from datetime import datetime, timedelta, time
-
+from itertools import chain
 import json
 import requests
+from rest_framework import status
 
 # An api key is emailed to you when you sign up to a plan
 api_key = 'cc7678327fff34159a75ee213a35a516'
@@ -152,7 +153,7 @@ class GameView(APIView):
             # tokenview = AuthToken.objects.get(token_key=key).user
             user = User.objects.get(pk=tokenview)
             now = datetime.now()
-            games = Game.objects.filter(commence_time__gte=now, is_end=False)  
+            games = Game.objects.filter(commence_time__gte=now, is_end=False).order_by('commence_time')[:10]
             serializer = GameSerializer(games, many=True)
             return JsonResponse(serializer.data, safe=False)
 
@@ -169,7 +170,6 @@ class GameDetailsView(APIView):
             tokenview = get_object_or_404(AuthToken, token_key=key).user.id
             # tokenview = AuthToken.objects.get(token_key=key).user
             user = User.objects.get(pk=tokenview)
-
             games = Game.objects.get(id=game_id, is_end=False)  
             serializer = GameSerializer(games, many=False)
             return JsonResponse(serializer.data, safe=False)
@@ -207,14 +207,21 @@ class AddBetView(APIView):
             tokenview = get_object_or_404(AuthToken, token_key=key).user.id
             # tokenview = AuthToken.objects.get(token_key=key).user
             user = User.objects.get(pk=tokenview)
+            wallet = Wallet.objects.get(user=user)
             game = request.data.get("game")
             prix = request.data.get("prix")
             winning_equipe = request.data.get("winning_equipe")
             game_id = Game.objects.get(pk=game)
-            if game and prix and winning_equipe:
-                Bet.objects.get_or_create(owner=user, game=game_id, prix=prix, winning_equipe=winning_equipe)  
+            if int(wallet.montant) >= int(prix):
+                if game and prix and winning_equipe:
+                    filtre_exist = Bet.objects.filter(owner=user, game=game_id)  
+                    if not filtre_exist.exists():
+                        Wallet.objects.filter(user=user).update(montant=F('montant') - int(prix))
+                        Bet.objects.get_or_create(owner=user, game=game_id, prix=prix, winning_equipe=winning_equipe)  
+                else:
+                    return JsonResponse({'status': 0, 'message': 'errorrr!!!'}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return JsonResponse({'status': 0, 'message': 'errorrr!!!'})
+                return JsonResponse({'message': 'Votre solde est insuffisant'}, status=status.HTTP_400_BAD_REQUEST)
             return JsonResponse({'status': 1, 'message': 'request successfully!'})
 
 class DeleteBetView(APIView):
@@ -233,7 +240,7 @@ class DeleteBetView(APIView):
             if bet_id:
                 Bet.objects.filter(owner=user, id=bet_id, is_active=False).delete()  
             else:
-                return JsonResponse({'status': 0, 'message': 'errorrr!!!'})
+                return JsonResponse({'status': 0, 'message': 'errorrr!!!'}, status=status.HTTP_400_BAD_REQUEST)
             return JsonResponse({'status': 1, 'message': 'request successfully!'})
 
 class MyBetView(APIView):
@@ -265,7 +272,9 @@ class MyActiveBetView(APIView):
             tokenview = get_object_or_404(AuthToken, token_key=key).user.id
             # tokenview = AuthToken.objects.get(token_key=key).user
             user = User.objects.get(pk=tokenview)
-            bets = BetActive.objects.filter(user=user, is_end=False)  
+            bet1 = BetActive.objects.filter(user=user, is_end=False)  
+            bet2 = BetActive.objects.filter(bet__owner=user, is_end=False)  
+            bets = chain(bet1, bet2)
             serializer = BetActiveSerializer(bets, many=True)
             return JsonResponse(serializer.data, safe=False)
 
@@ -281,7 +290,9 @@ class MyOldBetView(APIView):
             tokenview = get_object_or_404(AuthToken, token_key=key).user.id
             # tokenview = AuthToken.objects.get(token_key=key).user
             user = User.objects.get(pk=tokenview)
-            bets = BetActive.objects.filter(user=user, is_end=True)  
+            bet1 = BetActive.objects.filter(user=user, is_end=True)  
+            bet2 = BetActive.objects.filter(bet__owner=user, is_end=True)  
+            bets = chain(bet1, bet2) 
             serializer = BetActiveSerializer(bets, many=True)
             return JsonResponse(serializer.data, safe=False)
 
@@ -307,7 +318,7 @@ class AcceptBetView(APIView):
                 BetActive.objects.get_or_create(bet=bet, user=user, user_position='team2')
                 Bet.objects.filter(id=id_accept).update(is_active=True)
             else:
-                return JsonResponse({'status': 0, 'message': 'errorrr!!!'})
+                return JsonResponse({'status': 0, 'message': 'errorrr!!!'}, status=status.HTTP_400_BAD_REQUEST)
             return JsonResponse({'status': 1, 'message': 'request successfully!'})
 
 class WalletView(APIView):
@@ -329,7 +340,7 @@ class WalletView(APIView):
             # tokenview = AuthToken.objects.get(token_key=key).user
             user = Wallet.objects.get(user=tokenview)
         if not user:
-            return JsonResponse({'status': 0, 'message': 'User with this id not found'})
+            return JsonResponse({'status': 0, 'message': 'User with this id not found'}, status=status.HTTP_400_BAD_REQUEST)
 
         # You have a serializer that you specified which fields should be available in fo
         serializer = WalletSerializer(user)
@@ -359,12 +370,12 @@ class WalletView(APIView):
                 Wallet.objects.filter(user=user).update(montant=F('montant') - montantconver)
                 Coin.objects.filter(user=user).update(coins=F('coins') + coin)
             else:
-                return JsonResponse({'status': 0, 'message': 'inssuffisance du capitale'})
+                return JsonResponse({'status': 0, 'message': 'inssuffisance du capitale'}, status=status.HTTP_400_BAD_REQUEST)
         if montant:
             if int(getwallet.montant) >= montant:
                 Wallet.objects.filter(user=user).update(montant=F('montant') - montant)
             else:
-                return JsonResponse({'status': 0, 'message': 'inssuffisance du capitale'})
+                return JsonResponse({'status': 0, 'message': 'inssuffisance du capitale'}, status=status.HTTP_400_BAD_REQUEST)
         if montantquiz:
             kan = 10
             pricehere = int(montantquiz) / int(kan)
@@ -392,7 +403,7 @@ class ProfileUpdateView(APIView):
             print(tokenview)
             user = Profile.objects.get(user=tokenview)
         if not user:
-            return JsonResponse({'status': 0, 'message': 'User with this id not found'})
+            return JsonResponse({'status': 0, 'message': 'User with this id not found'}, status=status.HTTP_400_BAD_REQUEST)
 
         # You have a serializer that you specified which fields should be available in fo
         serializer = ProfileSerializer(user)
@@ -442,7 +453,7 @@ class ProfileUpdateView(APIView):
                 userProfile.save()
                 return JsonResponse({'status': 1, 'message': 'Your profile updated successfully!'})
             else:
-                return JsonResponse({'status': 0, 'message': 'username existe deja'})
+                return JsonResponse({'status': 0, 'message': 'username existe deja'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             if username:
                 user.username = username
@@ -496,7 +507,7 @@ class MoncashView(APIView):
             WalletRequested.objects.filter(ref_code=order_id).update(is_complete=True)
             return JsonResponse({'status': 1, 'message': 'wallet success'})
         else:
-            return JsonResponse({'status': 0, 'message': 'wallet error'})
+            return JsonResponse({'status': 0, 'message': 'wallet error'}, status=status.HTTP_400_BAD_REQUEST)
 
 class RetraitView(APIView):
     def get(self, request, format=None):
@@ -511,7 +522,7 @@ class RetraitView(APIView):
             # tokenview = AuthToken.objects.get(token_key=key).user
             user = Retrait.objects.get(user=tokenview)
         if not user:
-            return JsonResponse({'status': 0, 'message': 'User with this id not found'})
+            return JsonResponse({'status': 0, 'message': 'User with this id not found'}, status=status.HTTP_400_BAD_REQUEST)
 
         # You have a serializer that you specified which fields should be available in fo
         serializer = RetraitSerializer(user, many=True)

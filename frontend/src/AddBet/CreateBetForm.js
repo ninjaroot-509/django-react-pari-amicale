@@ -94,7 +94,7 @@ function CreateBetForm({game,history}) {
         } else{
             const config = { headers: { 'Content-Type': 'application/json' } }
             if (token) config.headers['Authorization'] = `Token ${token}`
-            axios.post(`http://localhost:8000/api/add-bet/`, JSON.stringify({game: game.id, prix: prix, winning_equipe: winning_equipe}), config)
+            axios.post(`https://paryaj.quizapay.com/api/add-bet/`, JSON.stringify({game: game.id, prix: prix, winning_equipe: winning_equipe}), config)
             .then(res => {
                 history.push('/mybets')
                 alert("Votre pari est place");

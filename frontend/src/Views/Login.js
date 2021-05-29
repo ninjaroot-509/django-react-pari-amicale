@@ -44,7 +44,7 @@ const Login = ({ history }) => {
             setLoad(true)
             const config = { headers: { 'Content-Type': 'application/json' } }
             const body = JSON.stringify({ username, password })
-            axios.post( 'http://localhost:8000/api/auth/login', body, config)
+            axios.post( 'https://paryaj.quizapay.com/api/auth/login', body, config)
             .then(res => { 
                 setUserSession(res.data.token, res.data.user, res.data.profile);       // LOGIN OK redirect 
                 addNotification({

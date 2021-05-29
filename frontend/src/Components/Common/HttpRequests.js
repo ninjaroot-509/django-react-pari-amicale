@@ -1,17 +1,23 @@
 import axios from 'axios'
 import {
     getToken,
-    // removeUserSession 
+    removeUserSession
 } from './Auth/Sessions'
 // import history from '../../history';
 
-const url = 'http://localhost:8000/api/'
+const url = 'https://paryaj.quizapay.com/api/'
 const config = { headers: { 'Content-Type': 'application/json' } }
 const token = getToken()
 if (token) config.headers['Authorization'] = `Token ${token}`
 
 const getProfile = () => axios.get(`${url}profile/`, config).then(res => res.data)
 const getWallet = () => axios.get(`${url}wallet/`, config).then(res => res.data)
+    .catch(error => {
+        if (error.response.status === 401) {
+            removeUserSession()
+            window.location.reload()
+        }
+    });
 const getRetrait = () => axios.get(`${url}retrait/`, config).then(res => res.data)
 const getGame = () => axios.get(`${url}games/`, config).then(res => res.data)
 const getGameID = (id) => axios.get(`${url}game-details/?id=${id}`, config).then(res => res.data)

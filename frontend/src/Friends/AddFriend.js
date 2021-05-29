@@ -138,7 +138,7 @@ const AddFriend = ({history}) => {
     document.getElementById('friendSearch').value = '';
     const config = { headers: { 'Content-Type': 'application/json' } }
     if (token) config.headers['Authorization'] = `Token ${token}`
-      axios.post(`http://localhost:8000/api/friends-actions/`, JSON.stringify({id_add: id}), config)
+      axios.post(`https://paryaj.quizapay.com/api/friends-actions/`, JSON.stringify({id_add: id}), config)
       .then(res => {
           setOpen(true)
       })
@@ -202,7 +202,7 @@ const AddFriend = ({history}) => {
             <List>
               {member.map(member => (
                 <ListItem key={member.id}>
-                  <ListItemAvatar><Avatar className={classes.avatar} src={'http://localhost:8000' + member.photo}>{member.first_name}{member.last_name}</Avatar></ListItemAvatar>
+                  <ListItemAvatar><Avatar className={classes.avatar} src={'https://paryaj.quizapay.com' + member.photo}>{member.first_name}{member.last_name}</Avatar></ListItemAvatar>
                   <ListItemText primary={<Typography style={{color: 'white'}}>{member.username}</Typography>}/>
                   <ListItemSecondaryAction><IconButton onClick={() => addFriend(member.id)}><AddIcon style={{color: 'white'}}/></IconButton></ListItemSecondaryAction>
                 </ListItem>

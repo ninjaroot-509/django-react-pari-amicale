@@ -44,7 +44,7 @@ function Open(props) {
   const handleDelete = (id) => {
     const config = { headers: { 'Content-Type': 'application/json' } }
     if (token) config.headers['Authorization'] = `Token ${token}`
-    axios.post(`http://localhost:8000/api/delete-bet/`, JSON.stringify({bet_id: id}), config)
+    axios.post(`https://paryaj.quizapay.com/api/delete-bet/`, JSON.stringify({bet_id: id}), config)
     .then(res => {
         alert("le pari a été effacé avec succès!");
     })

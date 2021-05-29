@@ -130,7 +130,7 @@ const handleSubmitClick = (ev) => {
     }
     const config = { headers: { 'Content-Type': 'application/json' } }
     if (token) config.headers['Authorization'] = `Token ${token}`
-    axios.post(`http://localhost:8000/api/profile/`, formData, config)
+    axios.post(`https://paryaj.quizapay.com/api/profile/`, formData, config)
     .then(res => {
         const userE={
             "id": user.id,
@@ -183,7 +183,7 @@ const handleSubmitDep = () => {
         if (montant !== undefined) {
             if (montant >= 1) {
                 setLoad(true)
-                axios.post(`http://localhost:8000/api/depot/`, JSON.stringify({montant: montant}), config)
+                axios.post(`https://paryaj.quizapay.com/api/depot/`, JSON.stringify({montant: montant}), config)
                 .then(res => {
                     setLoad(false)
                     closeDep()

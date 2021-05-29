@@ -58,14 +58,12 @@ class RegisterAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         _,token = AuthToken.objects.create(user) 
+        user_profile = Profile.objects.get(pk=user.id)
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
-            "token": token
+            "token": token,
+            "profile": ProfileSerializer(user_profile, context=self.get_serializer_context()).data,
         }) 
-
-import json
-import simplejson
-from django.core import serializers
 
 class LoginAPI(generics.GenericAPIView):
     serializer_class = LoginSerializer
@@ -76,13 +74,11 @@ class LoginAPI(generics.GenericAPIView):
         user = serializer.validated_data
         _,token = AuthToken.objects.create(user) 
         login(request, user)
-        # wallet = Wallet.objects.get(user=user.id)
-        # coin = Coin.objects.get(user=user.id)
+        user_profile = Profile.objects.get(pk=user.id)
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "token": token,
-            # "wallet": simplejson.dumps(wallet.montant),
-            # "coin": simplejson.dumps(coin.coins),
+            "profile": ProfileSerializer(user_profile, context=self.get_serializer_context()).data,
         }) 
 
 class UserAPI(generics.RetrieveAPIView):

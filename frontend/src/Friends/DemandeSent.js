@@ -79,7 +79,7 @@ function DemandeSent(props) {
     const cancelRequest = (id) => {
       const config = { headers: { 'Content-Type': 'application/json' } }
         if (token) config.headers['Authorization'] = `Token ${token}`
-          axios.post(`http://localhost:8000/api/friends-actions/`, JSON.stringify({id_cancel: id}), config)
+          axios.post(`https://paryaj.quizapay.com/api/friends-actions/`, JSON.stringify({id_cancel: id}), config)
           .then(res => {
               setOpen(true)
           })
@@ -109,7 +109,7 @@ function DemandeSent(props) {
                   {demandeList.map((friend) =>
                     <ListItem key={friend.id}>
                       <ListItemAvatar>
-                        <Avatar src={'http://localhost:8000' + friend.photo}
+                        <Avatar src={'https://paryaj.quizapay.com' + friend.photo}
                           className={classes.avatar}>
                             {friend.to_user_name}
                         </Avatar>

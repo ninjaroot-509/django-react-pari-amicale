@@ -21,6 +21,8 @@ class DemandeSerializer(serializers.ModelSerializer):
         # read_only_fields = ('user',)
 
 class GameSerializer(serializers.ModelSerializer):
+    cate_name = serializers.CharField(source='category.name')
+    cate_groupe = serializers.CharField(source='category.groupe')
     class Meta:
         model = Game
         fields = '__all__'

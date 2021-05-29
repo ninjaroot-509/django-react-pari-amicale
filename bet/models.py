@@ -102,8 +102,29 @@ class Retrait(models.Model):
         return '{} a retire {} Gourdes a son portefeuille le {}'.format(self.user.username, self.montant, self.date) # TODO
 
 
+class Category(models.Model):
+    title = models.CharField(max_length=500)
+    name = models.CharField(max_length=700)
+    groupe = models.CharField(max_length=500)
+    slug = models.SlugField()
+    description = models.TextField(blank=True)
+    image = models.ImageField(default='categories/category.jpg', upload_to='categories/', null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'Categorie match'
+        verbose_name_plural = 'Listes des categories matchs'
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("category", kwargs={
+            'slug': self.slug
+        })
 
 class Game(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     api_id = models.CharField(max_length=200)
     sport_key = models.CharField(max_length=100)
     sport_nice = models.CharField(max_length=100)
@@ -112,14 +133,6 @@ class Game(models.Model):
     home_team = models.CharField(max_length=250)
     commence_time = models.DateTimeField()
     add_time = models.DateTimeField(auto_now_add=True)
-    site_key = models.CharField(max_length=100)
-    site_nice = models.CharField(max_length=100)
-    last_update = models.DateTimeField()
-    win = models.CharField(max_length=100)
-    null = models.CharField(max_length=100, null=True, blank=True)
-    lose = models.CharField(max_length=100)
-    is_foot = models.BooleanField(default=False)
-    is_other = models.BooleanField(default=False)
     is_end = models.BooleanField(default=False)
 
     class Meta:
@@ -156,6 +169,12 @@ class BetActive(models.Model):
     class Meta:
         verbose_name = 'ParisActive Liste'
         verbose_name_plural = 'Listes des ParisActive'
+
+    def team1(self):
+        return self.bet.game.team1
+    
+    def team2(self):
+        return self.bet.game.team2
 
     def __str__(self):
         return '{} VS {}'.format(self.bet.game.team1, self.bet.game.team2) # TODO

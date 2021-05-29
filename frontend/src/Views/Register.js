@@ -49,7 +49,7 @@ const Register = ({ history }) => {
             setLoad(true)
             const body = JSON.stringify({ username, email, password });
             const config = { headers: { 'Content-Type': 'application/json' } }
-            axios.post('http://localhost:8000/api/auth/register', body, config)
+            axios.post('https://paryaj.quizapay.com/api/auth/register', body, config)
                 .then(res => {
                     setUserSession(res.data.token, res.data.user, res.data.profile);       // REG OK   
                     addNotification({

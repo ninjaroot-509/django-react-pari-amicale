@@ -31,7 +31,7 @@ function OpenBetRow(props) {
     //regardless, closes the dialog
     const config = { headers: { 'Content-Type': 'application/json' } }
     if (token) config.headers['Authorization'] = `Token ${token}`
-      axios.post(`http://localhost:8000/api/accept-bet/`, JSON.stringify({id_accept: id, user_position: user_position}), config)
+      axios.post(`https://paryaj.quizapay.com/api/accept-bet/`, JSON.stringify({id_accept: id, user_position: user_position}), config)
       .then(res => {
       })
       .catch(err => {

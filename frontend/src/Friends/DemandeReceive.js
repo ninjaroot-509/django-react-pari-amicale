@@ -63,7 +63,7 @@ function DemandeReceive(props) {
     const acceptFriend = (id) => {
       const config = { headers: { 'Content-Type': 'application/json' } }
         if (token) config.headers['Authorization'] = `Token ${token}`
-          axios.post(`http://localhost:8000/api/friends-actions/`, JSON.stringify({id_accept: id}), config)
+          axios.post(`https://paryaj.quizapay.com/api/friends-actions/`, JSON.stringify({id_accept: id}), config)
           .then(res => {
               setOpen(true)
           })
@@ -93,7 +93,7 @@ function DemandeReceive(props) {
                 {demandeList.map((friend) =>
                   <ListItem key={friend.id}>
                     <ListItemAvatar>
-                      <Avatar src={'http://localhost:8000' + friend.photo}
+                      <Avatar src={'https://paryaj.quizapay.com' + friend.photo}
                         className={classes.avatar}>
                           {friend.from_user_name}
                       </Avatar>
