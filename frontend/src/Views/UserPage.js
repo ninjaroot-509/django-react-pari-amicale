@@ -45,7 +45,7 @@ const useStyles = makeStyles({
         color: '#000'
       },
     logOutButton: {
-        paddingTop: '3em'
+        paddingTop: '1em'
     },
     headingTextGroup: {
         paddingRight: '1em',
@@ -68,7 +68,10 @@ const useStyles = makeStyles({
 
 const Profile = () => {
     const uploadInputRef = useRef(null);
+  const [load, setLoad] = useState(false);
   const [open, setOpen] = useState(false);
+  const [opendep, setOpenDep] = useState(false);
+  const [montant, setMontant] = useState('')
   const user = getUser()
     const token = getToken()
     const [photo, setPhoto] = useState()
@@ -159,11 +162,45 @@ const handleSubmitClick = (ev) => {
     
     .catch(err => {
         alert("profile error! " + err)
+        handleClose()
     })
     
 }
+const handleChangeDep = (ev) => {
+    if (ev.target.name === 'montant') setMontant(ev.target.value)
+}
+const openDep = () => {
+    setOpenDep(true)
+}
 
+const closeDep = () => {
+    setOpenDep(false)
+}
 
+const handleSubmitDep = () => {
+    const config = { headers: { 'Content-Type': 'application/json' } }
+        if (token) config.headers['Authorization'] = `Token ${token}`
+        if (montant !== undefined) {
+            if (montant >= 1) {
+                setLoad(true)
+                axios.post(`http://localhost:8000/api/depot/`, JSON.stringify({montant: montant}), config)
+                .then(res => {
+                    setLoad(false)
+                    closeDep()
+                    window.location.assign(res.data.site)
+                })
+                .catch(err => {
+                    setLoad(false)
+                    closeDep()
+                    alert("Oupps une erreur s'est produite! " + err)
+                })
+            } else {
+                alert("il faut mettre un montant valide! ")
+            }
+        } else {
+            alert("il faut mettre le montant! ")
+        }
+}
     const classes = useStyles();
 
     return (
@@ -181,6 +218,7 @@ const handleSubmitClick = (ev) => {
                 </Grid>
                 <Grid item xs={12}>
                     <Button variant="contained" onClick={handleOpen} className={classes.button} color="primary">Modifier mon profile</Button>
+                    <Button variant="contained" style={{backgroundColor: '#008', color: 'white'}} onClick={openDep} className={classes.button} color="secondary">Depot moncash</Button>
                 </Grid>
                 </div>
                 <Grid item xs={12}>
@@ -381,6 +419,46 @@ const handleSubmitClick = (ev) => {
             </Button>
             <Button style={{color: '#000'}} onClick={handleSubmitClick} color="primary">
                 Sauvegarder
+            </Button>
+            </DialogActions>
+        </Dialog>
+
+        <Dialog  
+                fullWidth={true}
+                maxWidth="lg" 
+                open={opendep} 
+                onClose={closeDep} 
+                aria-labelledby="form-dialog-title">
+            <DialogContent style={{backgroundColor: 'white'}}>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        onChange={handleChangeDep}
+                        name="montant"
+                        label="Montant"
+                        type="text"
+                        placeholder="Ex: 100"
+                        fullWidth
+                        InputProps={{
+                        classes: {
+                            root: classes.notchedOutline,
+                            focused: classes.multilineColor,
+                        },
+                    }}
+                    InputLabelProps={{
+                        classes: {
+                            root: classes.cssLabel,
+                            focused: classes.borderColor,
+                        }
+                        }}
+                    />
+            </DialogContent>
+            <DialogActions style={{backgroundColor: 'white'}}>
+            <Button style={{color: '#000'}} onClick={closeDep} color="primary">
+                Annuler
+            </Button>
+            <Button style={{color: '#000'}} disable={load} onClick={handleSubmitDep} color="primary">
+                continuer
             </Button>
             </DialogActions>
         </Dialog>
