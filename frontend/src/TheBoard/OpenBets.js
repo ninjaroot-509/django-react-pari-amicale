@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import { getUser } from '../Components/Common/Auth/Sessions'
 import request from '../Components/Common/HttpRequests'
 import OpenBetRow from './OpenBetRow';
+import { Link } from "react-router-dom";
 //2.1 
 const useStyles = makeStyles({
   tableContainer: {
@@ -51,10 +52,11 @@ function OpenBets(props) {
           <Table aria-label="simple table" className={classes.table}>
             <TableHead>
               <TableRow>
-                <TableCell align="left" style={{color: '#000', fontWeight: 'bold'}}>Amis</TableCell>
+                <TableCell align="left" style={{color: '#000', fontWeight: 'bold'}}>Parieurs</TableCell>
                 <TableCell align="left" style={{color: '#000', fontWeight: 'bold'}}>Equipes</TableCell>
+                <TableCell align="left" style={{color: '#000', fontWeight: 'bold'}}>Montants</TableCell>
                 <TableCell align="left" style={{color: '#000', fontWeight: 'bold'}}>Propositions</TableCell>
-                <TableCell align="center" style={{color: '#000', fontWeight: 'bold'}}>heure de début&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TableCell>
+                <TableCell align="center" style={{color: '#000', fontWeight: 'bold'}}>Début du match&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -67,7 +69,7 @@ function OpenBets(props) {
           </Table>
         </TableContainer>
         :
-          <Typography color="textPrimary" className={classes.conditionalText}>Vos amis n'ont pas encore de paris ouverts.Essayez d'en informer!</Typography>
+          <Typography color="textPrimary" className={classes.conditionalText}>Vos amis n'ont pas encore de paris ouverts. Essayez d'en informer! ou <Link to="/friends/add">ajouter des amis</Link></Typography>
       }
     </>
   );

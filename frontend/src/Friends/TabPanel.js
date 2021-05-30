@@ -80,7 +80,7 @@ function SimpleTabs(props) {
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="Exemple d'onglets simples" className={classes.mainTab}>
           <Tab label="Mes amies" {...a11yProps(0)} className={classes.tabs} />
-          <Tab label="Demandes recus" {...a11yProps(1)} className={classes.tabs} />
+          <Tab label="Demandes reçues" {...a11yProps(1)} className={classes.tabs} />
           <Tab label="Demandes envoyés" {...a11yProps(2)} className={classes.tabs} />
         </Tabs>
       </AppBar>

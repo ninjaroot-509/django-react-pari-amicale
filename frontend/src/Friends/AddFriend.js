@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '1.5em',
     paddingLeft: '24px',
     paddingRight: '24px',
-    color: 'white',
+    color: '#000',
   },
   backButton: {
     fontSize: '3em',
@@ -82,9 +82,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#151515',
   },
   addFriendText: {
-    marginLeft: '1em',
+    marginLeft: '0.4em',
     color: 'white',
-    marginTop: '.5em',
+    marginTop: '.7em',
+    fontSize: 30
   },
   mainHeading: {
     zIndex: '20',
@@ -203,8 +204,8 @@ const AddFriend = ({history}) => {
               {member.map(member => (
                 <ListItem key={member.id}>
                   <ListItemAvatar><Avatar className={classes.avatar} src={'https://paryaj.quizapay.com' + member.photo}>{member.first_name}{member.last_name}</Avatar></ListItemAvatar>
-                  <ListItemText primary={<Typography style={{color: 'white'}}>{member.username}</Typography>}/>
-                  <ListItemSecondaryAction><IconButton onClick={() => addFriend(member.id)}><AddIcon style={{color: 'white'}}/></IconButton></ListItemSecondaryAction>
+                  <ListItemText primary={<Typography style={{color: '#000'}}>{member.username}</Typography>}/>
+                  <ListItemSecondaryAction><IconButton onClick={() => addFriend(member.id)}><AddIcon style={{color: '#000'}}/></IconButton></ListItemSecondaryAction>
                 </ListItem>
               ))}
             </List>

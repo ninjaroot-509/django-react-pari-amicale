@@ -33,8 +33,10 @@ function OpenBetRow(props) {
     if (token) config.headers['Authorization'] = `Token ${token}`
       axios.post(`https://paryaj.quizapay.com/api/accept-bet/`, JSON.stringify({id_accept: id, user_position: user_position}), config)
       .then(res => {
+        alert('le pari a été accepté')
       })
       .catch(err => {
+        alert('Votre solde est insuffisant')
       })
     handleClose();
   }
@@ -46,15 +48,16 @@ function OpenBetRow(props) {
         <TableCell style={{color: '#000'}} align="left">{props.bet.owner_name}</TableCell>
         {/* Game */}
         <TableCell style={{color: '#000'}} align="left">{props.bet.team1} <b style={{color: 'green'}}>VS</b> {props.bet.team2}</TableCell>
+        <TableCell style={{color: '#002'}} align="left">{props.bet.prix} gourdes</TableCell>
         {/* Bet */}
         {/* determines if bet is spread or O/U */}
           <TableCell align="left" style={{color: '#000'}}>
             {/* checks if proposer is home team */}
             {props.bet.winning_equipe ?
-              <Typography variant="body2" style={{color: '#000'}}>victoire de <b>{props.bet.winning_equipe === 'team1' ? props.bet.team1 : props.bet.team2}</b></Typography>
+              <Typography variant="body2" style={{color: '#000'}}>victoire de <b style={{color: 'green'}}>{props.bet.winning_equipe === 'team1' ? props.bet.team1 : props.bet.team2}</b></Typography>
               :
               props.bet.is_null === true? 
-                <Typography variant="body2" style={{color: '#000'}}>match null</Typography>
+                <Typography variant="body2" style={{color: '#000'}}><b style={{color: 'green'}}>match null</b></Typography>
               :''
             }
           </TableCell>
@@ -68,24 +71,24 @@ function OpenBetRow(props) {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">Take this Bet?</DialogTitle>
+          <DialogTitle id="alert-dialog-title">Prenez-vous ce pari?</DialogTitle>
           <DialogContent>
             {/* displays different confirmation text depending if the bet is spread or over/under */}
             <>
               {/* spread options */}
               <DialogContentText id="alert-dialog-description">
-                {props.bet.owner_name} a parier sur victoire de {props.bet.winning_equipe === 'team1' ? props.bet.team1 : props.bet.team2} contre {props.bet.winning_equipe === 'team1' ? props.bet.team2 : props.bet.team1} pour une somme de {props.bet.prix} Gourdes
+                {props.bet.owner_name} a parier sur la victoire de <b style={{color: 'green'}}>{props.bet.winning_equipe === 'team1' ? props.bet.team1 : props.bet.team2}</b> contre <b style={{color: 'red'}}>{props.bet.winning_equipe === 'team1' ? props.bet.team2 : props.bet.team1}</b> pour une somme de {props.bet.prix} Gourdes
                 <br/>
-                si tu accept le parie tu paieras {props.bet.prix} gourdes, et si tu gagnes tu auras gagne {props.bet.prix} X2
+                si vous acceptez le pari, vous paierez {props.bet.prix} gourdes, et si vous gagnez, vous aurez gagné le double (-20%)
               </DialogContentText>
             </>            
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>
-              Back
+              Annuler
           </Button>
             <Button onClick={() => acceptBet(props.bet.id, props.bet.winning_equipe === 'team1' ? 'team2' : 'team1')}>
-              Accept Bet
+              Accepter le pari
             </Button>
           </DialogActions>
         </Dialog>

@@ -49,20 +49,22 @@ function History(props) {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-              <TableCell align="left">Ajout le</TableCell>
-                <TableCell align="center">Equipes</TableCell>
-                <TableCell align="left">Joeur</TableCell>
-                <TableCell align="center">Votre proposition</TableCell>
-                <TableCell align="center">l'autre proposition</TableCell>
-                <TableCell align="center">Gagnant</TableCell>
+              <TableCell align="left" style={{fontWeight: 'bold'}}>Date d'ajout</TableCell>
+                <TableCell align="center" style={{fontWeight: 'bold'}}>Equipes</TableCell>
+                <TableCell align="center" style={{fontWeight: 'bold'}}>Montants</TableCell>
+                <TableCell align="left" style={{fontWeight: 'bold'}}>Joeur</TableCell>
+                <TableCell align="center" style={{fontWeight: 'bold'}}>Votre proposition</TableCell>
+                <TableCell align="center" style={{fontWeight: 'bold'}}>l'autre proposition</TableCell>
+                <TableCell align="center" style={{fontWeight: 'bold'}}>Gagnant</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {oldBet.map(bet => (
                 <TableRow key={bet.id}>
-                  <TableCell align="left">{moment(bet.add_time).format("M/D/Y")}</TableCell>
+                  <TableCell align="left">{moment(bet.add_time).calendar()}</TableCell>
                   <TableCell align="center">{bet.team1 + ' @'}<br/>{bet.team2}</TableCell>
-                  {bet.owner === user.id?
+                  <TableCell align="center">{bet.prix} gourdes</TableCell>
+                  {bet.owner_name === user.username?
                   <>
                     <TableCell align="left">{bet.acceptors_name}</TableCell>
                     <TableCell align="center">

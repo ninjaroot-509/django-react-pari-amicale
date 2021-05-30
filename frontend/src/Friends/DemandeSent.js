@@ -57,17 +57,21 @@ function DemandeSent(props) {
   const [open, setOpen] = useState(false)
   const token = getToken()
   const classes = useStyles();
+  const [temp, setTemp] = useState(0)
     
     useEffect(()=>{
-        if (demandeList.length === 0) {
-          getdemandes()
-        }
+        setInterval(()=>{
+            setTemp((prevTemp)=>prevTemp+1)
+        }, 6000)
     }, [])
 
+    useEffect(()=>{
+      getdemandes()
+    }, [temp])
 
     const getdemandes = () => {
       request.getDemandeSentList().then(res => setDemande(res))
-    }
+    } 
 
     const handleClose = (event, reason) => {
       if (reason === 'clickaway') {
@@ -115,7 +119,7 @@ function DemandeSent(props) {
                         </Avatar>
                       </ListItemAvatar>
                       <ListItemText
-                        primary={<Typography style={{color: 'white'}}>{friend.to_user_name}</Typography>}
+                        primary={<Typography style={{color: '#000'}}>{friend.to_user_name}</Typography>}
                       />
                       <ListItemSecondaryAction><IconButton onClick={() => cancelRequest(friend.to_user)}><DeleteIcon style={{color: 'red'}}/></IconButton></ListItemSecondaryAction>
                     </ListItem>,

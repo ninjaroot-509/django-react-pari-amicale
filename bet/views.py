@@ -311,14 +311,19 @@ class AcceptBetView(APIView):
             id_accept = request.data.get("id_accept")
             user_position = request.data.get("user_position")
             bet = Bet.objects.get(id=id_accept)
-            if user_position == 'team1':
-                BetActive.objects.get_or_create(bet=bet, user=user, user_position='team1')
-                Bet.objects.filter(id=id_accept).update(is_active=True)
-            elif user_position == 'team2':
-                BetActive.objects.get_or_create(bet=bet, user=user, user_position='team2')
-                Bet.objects.filter(id=id_accept).update(is_active=True)
+            wallet = Wallet.objects.get(user=user)
+            if int(wallet.montant) >= int(bet.prix):
+                Wallet.objects.filter(user=user).update(montant=F('montant') - int(bet.prix))
+                if user_position == 'team1':
+                    BetActive.objects.get_or_create(bet=bet, user=user, user_position='team1')
+                    Bet.objects.filter(id=id_accept).update(is_active=True)
+                elif user_position == 'team2':
+                    BetActive.objects.get_or_create(bet=bet, user=user, user_position='team2')
+                    Bet.objects.filter(id=id_accept).update(is_active=True)
+                else:
+                    return JsonResponse({'status': 0, 'message': 'errorrr!!!'}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return JsonResponse({'status': 0, 'message': 'errorrr!!!'}, status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse({'message': 'Votre solde est insuffisant'}, status=status.HTTP_400_BAD_REQUEST)
             return JsonResponse({'status': 1, 'message': 'request successfully!'})
 
 class WalletView(APIView):

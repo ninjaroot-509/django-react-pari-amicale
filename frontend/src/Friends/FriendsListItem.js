@@ -36,13 +36,17 @@ const useStyles = makeStyles((theme) => ({
 function FriendsListItem(props) {
   const [friendsList, setFriend] = useState([])
   const classes = useStyles();
+  const [temp, setTemp] = useState(0)
     
-    useEffect(()=>{
-        if (friendsList.length === 0) {
-          getfriends()
-        }
-    }, [])
+  useEffect(()=>{
+      setInterval(()=>{
+          setTemp((prevTemp)=>prevTemp+1)
+      }, 10000)
+  }, [])
 
+  useEffect(()=>{
+    getfriends()
+  }, [temp])
 
     const getfriends = () => {
       request.getFriendList().then(res => setFriend(res))

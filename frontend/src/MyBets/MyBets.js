@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '6.5em',
+    height: '4.5em',
   },
   addButton: {
     float: "right",

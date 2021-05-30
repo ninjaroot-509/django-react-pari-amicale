@@ -74,9 +74,9 @@ function SimpleTabs(props) {
     <div className={classes.root}>
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" className={classes.mainTab}>
-          <Tab label={`Ouverts (${openBetsLength})`} {...a11yProps(0)} className={classes.tabs}/>
-          <Tab label={`Actives (${activeBetsLength})`} {...a11yProps(1)} className={classes.tabs}/>
-          <Tab label={`Historiques (${historyBetsLength})`} {...a11yProps(2)} className={classes.tabs}/>
+          <Tab label={`Paris ouverts`} {...a11yProps(0)} className={classes.tabs}/>
+          <Tab label={`Paris actifs`} {...a11yProps(1)} className={classes.tabs}/>
+          <Tab label={`Historiques des paris`} {...a11yProps(2)} className={classes.tabs}/>
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
