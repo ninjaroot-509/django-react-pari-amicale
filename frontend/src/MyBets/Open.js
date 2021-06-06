@@ -83,6 +83,7 @@ function Open(props) {
               <TableRow>
                 <TableCell align="left" style={{fontWeight: 'bold'}}>heure de début</TableCell>
                 <TableCell align="center" style={{fontWeight: 'bold'}}>Equipes</TableCell>
+                <TableCell align="center" style={{fontWeight: 'bold'}}>Montants</TableCell>
                 <TableCell align="center" style={{fontWeight: 'bold'}}>Votre proposition</TableCell>
                 <TableCell align="right" style={{fontWeight: 'bold'}}>Effacer</TableCell>
               </TableRow>
@@ -93,6 +94,7 @@ function Open(props) {
                 <TableRow key={bet.id}>
                   <TableCell align="left">{moment(bet.commence_time).calendar()}</TableCell>
                   <TableCell align="center">{bet.team1} @ {bet.team2}</TableCell>
+                  <TableCell align="center">{bet.prix} gourdes</TableCell>
                   <TableCell align="center">
                       {bet.winning_equipe?
                         <Typography style={{color: '#000'}} variant="body2">victoire de <b>{bet.winning_equipe === 'team1' ? bet.team1 : bet.team2}</b></Typography>

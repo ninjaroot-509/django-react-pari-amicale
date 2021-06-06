@@ -64,7 +64,7 @@ function History(props) {
                   <TableCell align="left">{moment(bet.add_time).calendar()}</TableCell>
                   <TableCell align="center">{bet.team1 + ' @'}<br/>{bet.team2}</TableCell>
                   <TableCell align="center">{bet.prix} gourdes</TableCell>
-                  {bet.owner_name === user.username?
+                  {bet.owner_id === user.id?
                   <>
                     <TableCell align="left">{bet.acceptors_name}</TableCell>
                     <TableCell align="center">
@@ -78,9 +78,9 @@ function History(props) {
                     </TableCell>
                     <TableCell align="center">victoire de {bet.user_position === 'team1' ? bet.team1 : bet.team2}</TableCell>
                     {bet.winning_user === user.id?
-                      <TableCell align="center">Vous</TableCell>
+                      <TableCell align="center" style={{color: 'green'}}>Vous</TableCell>
                       :
-                      <TableCell align="center">{bet.acceptors_name}</TableCell>
+                      <TableCell align="center" style={{color: 'green'}}>{bet.acceptors_name}</TableCell>
                     }
                   </>
                   :
@@ -97,9 +97,9 @@ function History(props) {
                         }
                     </TableCell>
                     {bet.winning_user === user.id?
-                      <TableCell align="center">Vous</TableCell>
+                      <TableCell align="center" style={{color: 'green'}}>Vous</TableCell>
                       :
-                      <TableCell align="center">{bet.owner_name}</TableCell>
+                      <TableCell align="center" style={{color: 'green'}}>{bet.owner_name}</TableCell>
                     }
                   </>
                   }

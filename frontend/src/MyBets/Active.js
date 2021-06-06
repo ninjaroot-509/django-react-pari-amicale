@@ -61,7 +61,7 @@ function Active(props) {
                   <TableCell align="left">{moment(bet.add_time).calendar()}</TableCell>
                   <TableCell align="center">{bet.team1 + ' @'}<br/>{bet.team2}</TableCell>
                   <TableCell align="center">{bet.prix} gourdes</TableCell>
-                  {bet.owner_name === user.username?
+                  {bet.owner_id === user.id?
                   <>
                     <TableCell align="left">{bet.acceptors_name}</TableCell>
                     <TableCell align="center">

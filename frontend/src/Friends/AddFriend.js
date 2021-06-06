@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '3em',
     position: 'relative',
     paddingLeft: '.25em',
+    color: 'white'
   },
   heading: {
     textAlign: 'center',

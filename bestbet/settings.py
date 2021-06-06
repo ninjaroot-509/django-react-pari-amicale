@@ -151,14 +151,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'htbonmache@gmail.com'
-EMAIL_HOST_PASSWORD = 'jepasse509haiti'
-EMAIL_SUBJECT_PREFIX = '[QuizaPay]'
+EMAIL_HOST_USER = 'email@email.com'
+EMAIL_HOST_PASSWORD = 'password'
+EMAIL_SUBJECT_PREFIX = '[BestBet]'
 ADMINS = (
-    ("Castin Stanley", "stanleycastin19@gmail.com"),
-    # ("Wenderson Beauchamps", "wendersonbeauchamps@yahoo.fr"),
-    ("Compte Admin", "htbonmache@gmail.com"),
+    # ("Admin", "admin@gmail.com"),
 )
 #moncash keys
-MONCASH_CLIENT_ID = '700be84a46c41559f8638066fa656964'
-MONCASH_SECRET_KEY = 'RbIbG7B_R2unx4V7fD0ZAf6FU1FvN55s8yYMPV2ilP_lyVzL-XD0hbOfg9ANHux5'
+MONCASH_CLIENT_ID = '.............................'
+MONCASH_SECRET_KEY = '.......................................'
